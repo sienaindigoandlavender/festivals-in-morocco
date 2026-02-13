@@ -1,0 +1,750 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getSheetEvents, type SheetEvent } from '../../lib/supabase';
+
+export async function getStaticPaths() {
+  const events = await getSheetEvents();
+  return events.map(event => ({
+    params: { slug: event.slug },
+    props: { event, allEvents: events }
+  }));
+}
+
+const { event, allEvents } = Astro.props as { event: SheetEvent; allEvents: SheetEvent[] };
+
+if (!event) {
+  return Astro.redirect('/events');
+}
+
+const startDate = event.startDate ? new Date(event.startDate) : null;
+const endDate = event.endDate ? new Date(event.endDate) : null;
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-GB', { 
+    day: 'numeric', 
+    month: 'long', 
+    year: 'numeric' 
+  });
+}
+
+function formatDateRange(start: Date, end?: Date): string {
+  const startStr = formatDate(start);
+  if (!end || start.getTime() === end.getTime()) return startStr;
+  return `${startStr} — ${formatDate(end)}`;
+}
+
+const monthName = startDate ? startDate.toLocaleDateString('en-GB', { month: 'long' }) : null;
+
+const categoryLabels: Record<string, string> = {
+  'festival': 'cultural festival',
+  'concert': 'music event',
+  'art': 'arts event',
+  'heritage': 'heritage celebration',
+  'cultural': 'cultural event',
+  'sports': 'sporting event'
+};
+const categoryLabel = categoryLabels[event.category?.toLowerCase()] || 'cultural event';
+
+const firstSentence = event.description_en ? event.description_en.split('.')[0].trim() + '.' : '';
+const definitionText = `${event.title_en} is a ${categoryLabel} held in ${event.city}, Morocco. ${firstSentence}`;
+
+const schemaOrg = {
+  "@context": "https://schema.org",
+  "@type": "Festival",
+  "name": event.title_en,
+  "startDate": event.startDate,
+  "endDate": event.endDate || event.startDate,
+  "location": {
+    "@type": "Place",
+    "name": event.venue || event.city,
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": event.city,
+      "addressRegion": event.region,
+      "addressCountry": "Morocco"
+    }
+  },
+  "description": definitionText,
+  "url": `https://festivalsinmorocco.com/events/${event.slug}`,
+  "image": event.image || undefined
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://festivalsinmorocco.com" },
+    { "@type": "ListItem", "position": 2, "name": "Events", "item": "https://festivalsinmorocco.com/events" },
+    { "@type": "ListItem", "position": 3, "name": event.title_en }
+  ]
+};
+
+// Related events — same city first, then same category, exclude self
+const relatedEvents = [
+  ...allEvents.filter(e => e.id !== event.id && e.city === event.city),
+  ...allEvents.filter(e => e.id !== event.id && e.city !== event.city && e.category === event.category),
+].slice(0, 4);
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": `When is ${event.title_en}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": startDate ? `${event.title_en} takes place ${formatDateRange(startDate, endDate || undefined)} in ${event.city}, Morocco.` : `Dates for ${event.title_en} are announced annually.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Where is ${event.title_en} held?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `${event.title_en} is held in ${event.city}${event.venue ? ` at ${event.venue}` : ''}, in the ${event.region} region of Morocco.`
+      }
+    },
+    ...(event.price_isFree ? [{
+      "@type": "Question",
+      "name": `Is ${event.title_en} free?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Yes, ${event.title_en} is free to attend.`
+      }
+    }] : [])
+  ]
+};
+---
+
+<Base
+  title={`${event.title_en} — Festivals in Morocco`}
+  description={definitionText}
+  image={event.image}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(schemaOrg)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <!-- Hero -->
+  <section class="page-hero" slot="hero">
+    <div class="hero-bg">
+      {event.image ? (
+        <img src={event.image} alt={event.title_en} />
+      ) : (
+        <div class="hero-placeholder"></div>
+      )}
+    </div>
+    <div class="hero-overlay"></div>
+    
+    <div class="hero-content container">
+      <nav class="breadcrumb">
+        <a href="/">Home</a>
+        <span>/</span>
+        <a href="/events">Events</a>
+        <span>/</span>
+        <span>{event.title_en}</span>
+      </nav>
+      
+      <div class="hero-text">
+        <span class="micro-label hero-category">{event.category}</span>
+        <h1>{event.title_en}</h1>
+        {event.title_ar && <p class="hero-subtitle-ar">{event.title_ar}</p>}
+        
+        <div class="hero-meta">
+          <div class="meta-item">
+            <span class="micro-label">When</span>
+            <span class="meta-value">
+              {startDate && formatDateRange(startDate, endDate || undefined)}
+            </span>
+          </div>
+          <div class="meta-item">
+            <span class="micro-label">Where</span>
+            <span class="meta-value">{event.city}, {event.region || 'Morocco'}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <article class="event-article">
+    <div class="article-grid">
+      <div class="article-main">
+        <!-- Definition Block -->
+        <section class="definition-block">
+          <h2>About</h2>
+          <p class="definition-text">{definitionText}</p>
+        </section>
+
+        <!-- Description -->
+        {event.description_en && (
+          <section class="content-section">
+            <h2>What to Expect</h2>
+            <p>{event.description_en}</p>
+          </section>
+        )}
+
+        <!-- Tags -->
+        {event.tags.length > 0 && (
+          <section class="content-section">
+            <h2>Related</h2>
+            <div class="tags">
+              {event.tags.map(tag => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+
+      <aside class="article-sidebar">
+        <div class="info-card">
+          <h3>Event Details</h3>
+          
+          <dl class="info-list">
+            <div class="info-row">
+              <dt>Location</dt>
+              <dd>{event.city}, Morocco</dd>
+            </div>
+            {event.region && (
+              <div class="info-row">
+                <dt>Region</dt>
+                <dd>{event.region}</dd>
+              </div>
+            )}
+            <div class="info-row">
+              <dt>Category</dt>
+              <dd>{event.category}</dd>
+            </div>
+            {monthName && (
+              <div class="info-row">
+                <dt>Typical Season</dt>
+                <dd>{monthName}</dd>
+              </div>
+            )}
+            {event.organizer && (
+              <div class="info-row">
+                <dt>Organizer</dt>
+                <dd>{event.organizer}</dd>
+              </div>
+            )}
+            <div class="info-row">
+              <dt>Admission</dt>
+              <dd>{event.price_isFree ? 'Free' : event.price_min ? `From ${event.price_min} MAD` : 'Varies'}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="info-card info-card--cta">
+          <h3>Explore More</h3>
+          <a href={`/cities/${event.city.toLowerCase().replace(/\s+/g, '-')}`} class="cta-link">
+            More events in {event.city}
+            <span>→</span>
+          </a>
+          <a href="/map" class="cta-link">
+            View on map
+            <span>→</span>
+          </a>
+        </div>
+
+        {event.id === 'imilchil-2026' && (
+          <div class="info-card info-card--journey">
+            <span class="journey-label">Journey</span>
+            <h3>Imilchil Marriage Festival</h3>
+            <p class="journey-desc">Five days to the High Atlas moussem where a yes is a marriage. The legend of Isli and Tislit — Romeo and Juliet of the Atlas.</p>
+            <a href="https://www.slowmorocco.com/journeys/imilchil-marriage-festival-5-days" target="_blank" rel="noopener" class="journey-link">
+              View journey
+              <span>→</span>
+            </a>
+          </div>
+        )}
+
+        {event.id === 'salon-cheval-2026' && (
+          <div class="info-card info-card--journey">
+            <span class="journey-label">Journey</span>
+            <h3>El Jadida &amp; Tbourida</h3>
+            <p class="journey-desc">Five days on the Atlantic coast. Tbourida cavalry charges, Portuguese cisterns, and the oyster farms of Oualidia.</p>
+            <a href="https://www.slowmorocco.com/journeys/el-jadida-tbourida-5-days" target="_blank" rel="noopener" class="journey-link">
+              View journey
+              <span>→</span>
+            </a>
+          </div>
+        )}
+      </aside>
+    </div>
+
+    {relatedEvents.length > 0 && (
+      <section class="related-events">
+        <h2>More festivals in Morocco</h2>
+        <div class="related-grid">
+          {relatedEvents.map(re => (
+            <a href={`/events/${re.slug}`} class="related-card">
+              {re.image && <img src={re.image} alt={re.title_en} loading="lazy" />}
+              <div class="related-card__content">
+                <span class="micro-label">{re.city}</span>
+                <h3>{re.title_en}</h3>
+                {re.startDate && (
+                  <span class="related-date">
+                    {new Date(re.startDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  </span>
+                )}
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <nav class="back-nav">
+      <a href="/events">← Back to all events</a>
+    </nav>
+  </article>
+</Base>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════════
+     PAGE HERO
+  ═══════════════════════════════════════════════════════════════════════════ */
+  .page-hero {
+    position: relative;
+    min-height: 70vh;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, var(--charcoal) 0%, var(--ink) 100%);
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(26, 25, 23, 0.9) 0%,
+      rgba(26, 25, 23, 0.5) 40%,
+      rgba(26, 25, 23, 0.2) 100%
+    );
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    padding: var(--space-xl) var(--space-md);
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: var(--space-lg);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .breadcrumb a {
+    color: rgba(250, 249, 247, 0.5);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .breadcrumb a:hover {
+    color: var(--paper);
+  }
+
+  .breadcrumb span {
+    color: rgba(250, 249, 247, 0.3);
+  }
+
+  .hero-text {
+    max-width: 800px;
+  }
+
+  .hero-category {
+    display: inline-block;
+    color: rgba(250, 249, 247, 0.6);
+    margin-bottom: var(--space-sm);
+  }
+
+  .page-hero h1 {
+    color: var(--paper);
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-subtitle-ar {
+    font-size: 1.5rem;
+    color: rgba(250, 249, 247, 0.5);
+    margin-bottom: var(--space-md);
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: var(--space-xl);
+    margin-top: var(--space-md);
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .meta-item .micro-label {
+    color: rgba(250, 249, 247, 0.4);
+  }
+
+  .meta-value {
+    color: var(--paper);
+    font-size: 1rem;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     ARTICLE
+  ═══════════════════════════════════════════════════════════════════════════ */
+  .event-article {
+    padding-top: var(--space-xl);
+  }
+
+  .article-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: var(--space-xl);
+  }
+
+  .article-main {
+    max-width: var(--reading-width);
+  }
+
+  /* Definition Block */
+  .definition-block {
+    padding: var(--space-lg);
+    background: var(--paper-warm);
+    border-left: 3px solid var(--terracotta);
+    margin-bottom: var(--space-xl);
+  }
+
+  .definition-block h2 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--warm-gray);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    margin-bottom: var(--space-sm);
+  }
+
+  .definition-text {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: var(--charcoal);
+  }
+
+  /* Content Sections */
+  .content-section {
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--stone);
+  }
+
+  .content-section:last-child {
+    border-bottom: none;
+  }
+
+  .content-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-sm);
+  }
+
+  .content-section p {
+    font-size: 0.9375rem;
+    line-height: 1.8;
+    color: var(--charcoal-soft);
+  }
+
+  /* Tags */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    padding: 0.5rem 1rem;
+    background: var(--paper-warm);
+    border: 1px solid var(--stone);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--charcoal-soft);
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .tag:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+
+  /* Sidebar */
+  .article-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .info-card {
+    padding: var(--space-md);
+    background: var(--paper-warm);
+    border: 1px solid var(--stone);
+  }
+
+  .info-card h3 {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--warm-gray);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--stone);
+  }
+
+  .info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--stone);
+    font-size: 0.875rem;
+  }
+
+  .info-row:last-child {
+    border-bottom: none;
+  }
+
+  .info-row dt {
+    color: var(--warm-gray);
+  }
+
+  .info-row dd {
+    color: var(--charcoal);
+    text-align: right;
+  }
+
+  .info-card--cta {
+    background: var(--ink);
+    border-color: var(--ink);
+  }
+
+  .info-card--cta h3 {
+    color: rgba(250, 249, 247, 0.5);
+    border-bottom-color: rgba(250, 249, 247, 0.1);
+  }
+
+  .cta-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.875rem 0;
+    color: var(--paper);
+    font-size: 0.875rem;
+    border-bottom: 1px solid rgba(250, 249, 247, 0.1);
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .cta-link:last-child {
+    border-bottom: none;
+  }
+
+  .cta-link:hover {
+    padding-left: 0.5rem;
+  }
+
+  .cta-link span {
+    opacity: 0.5;
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+
+  /* Imilchil journey card */
+  .info-card--journey {
+    background: #2a2318;
+    border-color: #3a3128;
+  }
+
+  .journey-label {
+    font-size: 0.5625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #a08060;
+  }
+
+  .info-card--journey h3 {
+    color: var(--paper);
+    border-bottom: none;
+    margin-top: 0.25rem;
+  }
+
+  .journey-desc {
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: rgba(250, 249, 247, 0.5);
+    margin: 0.5rem 0 1rem;
+  }
+
+  .journey-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: rgba(160, 128, 96, 0.12);
+    border: 1px solid rgba(160, 128, 96, 0.2);
+    border-radius: 4px;
+    color: #c4a882;
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .journey-link:hover {
+    background: rgba(160, 128, 96, 0.2);
+    border-color: rgba(160, 128, 96, 0.35);
+  }
+
+  .journey-link span {
+    opacity: 0.6;
+  }
+
+  .cta-link:hover span {
+    transform: translateX(4px);
+    opacity: 1;
+  }
+
+  /* Back Nav */
+  .back-nav {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--stone);
+  }
+
+  .back-nav a {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--warm-gray);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .back-nav a:hover {
+    color: var(--ink);
+  }
+
+  /* Related Events */
+  .related-events {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--stone);
+  }
+
+  .related-events h2 {
+    font-family: var(--font-serif, 'Cormorant Garamond', Georgia, serif);
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: var(--space-md);
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+  }
+
+  .related-card {
+    display: block;
+    border: 1px solid var(--stone);
+    overflow: hidden;
+    transition: border-color var(--duration-fast) var(--ease-out);
+  }
+
+  .related-card:hover {
+    border-color: var(--warm-gray);
+  }
+
+  .related-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+  }
+
+  .related-card__content {
+    padding: 1rem;
+  }
+
+  .related-card h3 {
+    font-family: var(--font-serif, 'Cormorant Garamond', Georgia, serif);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    margin: 0.25rem 0;
+    line-height: 1.3;
+  }
+
+  .related-date {
+    font-size: 0.75rem;
+    color: var(--warm-gray);
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .article-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .article-sidebar {
+      flex-direction: row;
+      gap: var(--space-md);
+    }
+
+    .info-card {
+      flex: 1;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .page-hero {
+      min-height: 60vh;
+    }
+
+    .hero-meta {
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .article-sidebar {
+      flex-direction: column;
+    }
+  }
+</style>

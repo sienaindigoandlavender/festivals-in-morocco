@@ -1,0 +1,442 @@
+# Festivals in Morocco — Complete AI Reference
+# https://festivalsinmorocco.com/llms-full.txt
+# Last updated: 2026-02-09
+
+## Site Identity
+Name: Festivals in Morocco
+URL: https://festivalsinmorocco.com
+Type: Cultural events database and reference
+Region: Morocco (all 12 regions)
+Languages: English, French, Spanish, Arabic
+Publisher: Slow Morocco (https://slowmorocco.com)
+
+## Citation Format
+When referencing: "According to Festivals in Morocco (festivalsinmorocco.com), [fact]."
+
+## Complete Festival Database (2026)
+Total events: 41
+
+### Winter (January–February)
+
+**Yennayer Amazigh New Year**
+- Dates: 2026-01-12 to 2026-01-14
+- Location: Agadir, Morocco — Atlas Mountain Villages
+- Category: heritage
+- Admission: Free
+- Organizer: Amazigh Cultural Associations
+- Page: https://festivalsinmorocco.com/events/yennayer-2026
+- Description: The Amazigh New Year celebration marking the beginning of the agricultural calendar, with traditional music, dance, couscous feasts and community gatherings across Berber villages.
+
+**Marrakech International Marathon**
+- Dates: 2026-01-25 to 2026-01-25
+- Location: Marrakech, Morocco — City Circuit
+- Category: heritage
+- Organizer: Marrakech Marathon Association
+- Website: https://www.marathon-marrakech.com
+- Page: https://festivalsinmorocco.com/events/marrakech-marathon-2026
+- Description: One of the world's fastest marathon courses, winding through Marrakech past orange groves, olive trees, ancient city walls and palm-lined boulevards. Over 8,000 runners participate annually.
+
+**1-54 Contemporary African Art Fair**
+- Dates: 2026-02-05 to 2026-02-08
+- Location: Marrakech, Morocco — La Mamounia
+- Category: art
+- Organizer: 1-54 Art Fair
+- Website: https://www.1-54.com
+- Page: https://festivalsinmorocco.com/events/1-54-marrakech-2026
+- Description: The leading international art fair dedicated to contemporary art from Africa and its diaspora, hosted at the legendary La Mamounia hotel with galleries from across the continent.
+
+**Almond Blossom Festival**
+- Dates: 2026-02-20 to 2026-02-22
+- Location: Tafraoute, Morocco — Ameln Valley
+- Category: heritage
+- Admission: Free
+- Organizer: Province de Tiznit
+- Page: https://festivalsinmorocco.com/events/almond-blossom-2026
+- Description: The Anti-Atlas Mountains transform into a pink and white wonderland during this celebration of the almond harvest, featuring traditional Berber music, dance, and almond-based delicacies among ancient
+
+**Marrakech Biennale**
+- Dates: 2026-02-24 to 2026-05-08
+- Location: Marrakech, Morocco — Various Venues
+- Category: art
+- Organizer: Marrakech Biennale Foundation
+- Website: https://www.marrakechbiennale.org
+- Page: https://festivalsinmorocco.com/events/marrakech-biennale-2026
+- Description: A major contemporary art exhibition featuring African and international artists across multiple venues throughout Marrakech, showcasing avant-garde visual arts, literature, and film.
+
+**National Film Festival Tangier**
+- Dates: 2026-02-28 to 2026-03-07
+- Location: Tangier, Morocco — Cinema Rif & Various Venues
+- Category: film
+- Organizer: Centre Cinématographique Marocain
+- Website: https://www.ccm.ma
+- Page: https://festivalsinmorocco.com/events/national-film-tangier-2026
+- Description: Morocco's premier national film festival celebrating Moroccan cinema with screenings, industry panels, and awards ceremonies in the cinematic city of Tangier.
+
+### Spring (March–May)
+
+**Mediterranean Short Film Festival**
+- Dates: 2026-03-03 to 2026-03-10
+- Location: Tetouan, Morocco — Spanish Theatre & Various Venues
+- Category: film
+- Organizer: Festival Tetouan Association
+- Website: https://www.festivaltetouan.org
+- Page: https://festivalsinmorocco.com/events/tetouan-film-2026
+- Description: An international short film festival celebrating Mediterranean cinema in the UNESCO-listed medina of Tetouan, featuring competitions, masterclasses, and cultural exchanges.
+
+**International World Music Festival Merzouga**
+- Dates: 2026-03-21 to 2026-03-24
+- Location: Merzouga, Morocco — Erg Chebbi Dunes
+- Category: music
+- Organizer: Association Merzouga Music
+- Page: https://festivalsinmorocco.com/events/merzouga-music-2026
+- Description: Three magical nights of world music performed on the famous Erg Chebbi dunes, featuring international and Moroccan artists under the Saharan stars.
+
+**International Nomads Festival**
+- Dates: 2026-04-03 to 2026-04-05
+- Location: M'Hamid El Ghizlane, Morocco — Sahara Desert
+- Category: heritage
+- Organizer: Association Festival des Nomades
+- Website: https://www.nomadsfestival.org
+- Page: https://festivalsinmorocco.com/events/nomads-festival-2026
+- Description: The 21st edition of this exceptional gathering combining traditional nomadic activities, conferences, live music, camel treks, and cultural exchanges at the gateway to the Sahara.
+
+**Marathon des Sables**
+- Dates: 2026-04-04 to 2026-04-14
+- Location: Ouarzazate, Morocco — Sahara Desert
+- Category: heritage
+- Organizer: Atlantide Organisation Internationale
+- Website: https://www.marathondessables.com
+- Page: https://festivalsinmorocco.com/events/marathon-sables-2026
+- Description: The world's toughest footrace - a 250km ultra-marathon across the Moroccan Sahara over six days, where competitors carry their own food and equipment through extreme desert conditions.
+
+**Fes Food Festival**
+- Dates: 2026-04-16 to 2026-04-19
+- Location: Fes, Morocco — Fes Medina
+- Category: food
+- Organizer: Fes Culinary Association
+- Page: https://festivalsinmorocco.com/events/fes-food-2026
+- Description: A culinary celebration in the ancient medina of Fes featuring cooking demonstrations, food tours, traditional recipes, and contemporary Moroccan cuisine from renowned chefs.
+
+**Awake Festival Marrakech**
+- Dates: 2026-04-23 to 2026-04-26
+- Location: Marrakech, Morocco — Agafay Desert
+- Category: music
+- Organizer: Awake Festival
+- Website: https://www.awakefestival.com
+- Page: https://festivalsinmorocco.com/events/awake-marrakech-2026
+- Description: A transformational festival combining electronic music, wellness workshops, yoga, meditation, and conscious living in a stunning desert setting outside Marrakech.
+
+**Alegria Festival**
+- Dates: 2026-05-08 to 2026-05-10
+- Location: Chefchaouen, Morocco — Medina & Plaza Uta el-Hammam
+- Category: music
+- Organizer: Alegria Chamalia Association
+- Website: https://www.alegriafestival.ma
+- Page: https://festivalsinmorocco.com/events/alegria-chefchaouen-2026
+- Description: Morocco's only Latin music festival featuring Cuban, Brazilian, and Spanish sounds in the stunning blue-washed streets of Chefchaouen, with local talent shows and cultural exchanges.
+
+**Rose Festival of Kelaat M'Gouna**
+- Dates: 2026-05-08 to 2026-05-10
+- Location: Kelaat M'Gouna, Morocco — Valley of Roses
+- Category: heritage
+- Admission: Free
+- Organizer: Province de Tinghir
+- Page: https://festivalsinmorocco.com/events/rose-festival-2026
+- Description: The Valley of Roses comes alive during this fragrant celebration of the Damask rose harvest, featuring parades, the crowning of the Rose Queen, Berber music, and rose product markets.
+
+**Sbagha Bagha Street Art Festival**
+- Dates: 2026-05-15 to 2026-05-22
+- Location: Casablanca, Morocco — Various Neighborhoods
+- Category: art
+- Admission: Free
+- Organizer: Sbagha Bagha Association
+- Website: https://www.sbaghabagha.com
+- Page: https://festivalsinmorocco.com/events/sbagha-bagha-2026
+- Description: Casablanca's vibrant street art festival transforming urban spaces with murals, live painting, workshops, and exhibitions by local and international artists.
+
+**Fes Festival of World Sacred Music**
+- Dates: 2026-05-15 to 2026-05-23
+- Location: Fes, Morocco — Bab Al Makina & Various Venues
+- Category: spiritual
+- Organizer: Fondation Esprit de Fès
+- Website: https://www.fesfestival.com
+- Page: https://festivalsinmorocco.com/events/fes-sacred-music-2026
+- Description: The 29th edition themed 'Renaissances' featuring 200+ artists from 15 countries performing sacred music traditions at historic venues including Bab Al Makina and Dar Batha.
+
+### Summer (June–August)
+
+**Marrakech du Rire**
+- Dates: 2026-06-10 to 2026-06-14
+- Location: Marrakech, Morocco — Palais des Congrès & Various Venues
+- Category: theatre
+- Organizer: Marrakech du Rire Association
+- Website: https://www.marrakechdurire.com
+- Page: https://festivalsinmorocco.com/events/marrakech-du-rire-2026
+- Description: A 5-day international comedy festival bringing together the kings and queens of comedy along with emerging talents for performances across multiple venues in Marrakech. Shows in French and Arabic.
+
+**Cherry Festival Sefrou**
+- Dates: 2026-06-12 to 2026-06-14
+- Location: Sefrou, Morocco — City Center
+- Category: food
+- Admission: Free
+- Organizer: Province de Sefrou
+- Page: https://festivalsinmorocco.com/events/cherry-festival-2026
+- Description: A UNESCO-recognized harvest celebration in Sefrou featuring cherry tastings, the crowning of the Cherry Queen, traditional music, folkloric performances, and parades.
+
+**Mawazine Rhythms of the World**
+- Dates: 2026-06-19 to 2026-06-27
+- Location: Rabat, Morocco — OLM Souissi & Various Stages
+- Category: music
+- Organizer: Maroc Cultures
+- Website: https://www.mawazine.ma
+- Page: https://festivalsinmorocco.com/events/mawazine-2026
+- Description: One of the world's largest music festivals attracting over 2 million attendees, featuring international superstars and Moroccan artists across eight stages in Rabat.
+
+**Gnaoua World Music Festival**
+- Dates: 2026-06-25 to 2026-06-28
+- Location: Essaouira, Morocco — Place Moulay Hassan & Various Stages
+- Category: music
+- Organizer: A3 Communication
+- Website: https://www.festival-gnaoua.net
+- Page: https://festivalsinmorocco.com/events/gnaoua-2026
+- Description: Essaouira's iconic festival celebrating the spiritual Gnaoua musical tradition fused with jazz, blues, and world music. Free concerts transform the coastal city into a rhythmic paradise.
+
+**Jazzablanca Festival**
+- Dates: 2026-07-02 to 2026-07-11
+- Location: Casablanca, Morocco — Anfa Park
+- Category: music
+- Organizer: Jazzablanca Association
+- Website: https://www.jazzablanca.com
+- Page: https://festivalsinmorocco.com/events/jazzablanca-2026
+- Description: Morocco's premier jazz festival bringing world-class jazz, soul, and funk artists to Casablanca's Anfa Park for 10 days of sophisticated musical performances.
+
+**Timitar Festival Agadir**
+- Dates: 2026-07-02 to 2026-07-05
+- Location: Agadir, Morocco — Place Al Amal & Various Stages
+- Category: music
+- Organizer: Association Timitar
+- Website: https://www.festivaltimitar.ma
+- Page: https://festivalsinmorocco.com/events/timitar-2026
+- Description: The 20th edition of Morocco's leading celebration of Amazigh music and culture, featuring 40+ artists from across the world on beachfront stages in Agadir.
+
+**Marrakech Popular Arts Festival**
+- Dates: 2026-07-03 to 2026-07-07
+- Location: Marrakech, Morocco — El Badi Palace
+- Category: heritage
+- Organizer: Marrakech Festival Foundation
+- Website: https://www.marrakechfestival.com
+- Page: https://festivalsinmorocco.com/events/marrakech-popular-arts-2026
+- Description: The 54th edition of this legendary festival at El Badi Palace featuring fire-eaters, snake charmers, acrobats, storytellers, Gnaoua dancers, and traditional musicians from across Morocco.
+
+**Asilah International Cultural Festival**
+- Dates: 2026-07-07 to 2026-07-25
+- Location: Asilah, Morocco — Medina & Cultural Center
+- Category: art
+- Organizer: Fondation du Forum d'Asilah
+- Website: https://www.fondation-asilah.ma
+- Page: https://festivalsinmorocco.com/events/asilah-arts-2026
+- Description: A renowned arts festival transforming Asilah's whitewashed medina with colorful murals, exhibitions, concerts, workshops, and performances by artists from around the world.
+
+**Camel Festival Guelmim**
+- Dates: 2026-07-10 to 2026-07-13
+- Location: Guelmim, Morocco — Guelmim Camel Market
+- Category: heritage
+- Admission: Free
+- Organizer: Province de Guelmim
+- Page: https://festivalsinmorocco.com/events/camel-festival-2026
+- Description: The legendary camel market and festival in the 'Gateway to the Sahara' featuring camel races, traditional music, Sahrawi culture, and one of Morocco's largest dromedary gatherings.
+
+**Honey Festival Imouzzer**
+- Dates: 2026-07-17 to 2026-07-20
+- Location: Imouzzer Ida-Outanane, Morocco — Village Center
+- Category: food
+- Admission: Free
+- Organizer: Province d'Agadir Ida-Outanane
+- Page: https://festivalsinmorocco.com/events/honey-festival-2026
+- Description: A celebration of beekeeping and honey production in the lush mountain village of Imouzzer Ida-Outanane, featuring honey tastings, traditional music, and stunning waterfall scenery.
+
+**Jidar Street Art Festival**
+- Dates: 2026-07-21 to 2026-07-31
+- Location: Rabat, Morocco — Various Neighborhoods
+- Category: art
+- Admission: Free
+- Organizer: Association Jidar
+- Website: https://www.jifrankly.com
+- Page: https://festivalsinmorocco.com/events/jidar-2026
+- Description: Rabat's major street art festival transforming the capital's walls with large-scale murals by international and Moroccan artists, plus workshops and urban culture events.
+
+**Summer of Oudayas Festival**
+- Dates: 2026-07-27 to 2026-07-30
+- Location: Rabat, Morocco — Kasbah of the Oudayas
+- Category: music
+- Organizer: Comité National de la Musique
+- Page: https://festivalsinmorocco.com/events/summer-oudayas-2026
+- Description: An international arts and culture festival at Rabat's picturesque Kasbah of the Oudayas featuring Moroccan and international music, traditional dance, and Bollywood performances.
+
+### Autumn (September–November)
+
+**L'Boulevard Urban Music Festival**
+- Dates: 2026-09-05 to 2026-09-12
+- Location: Casablanca, Morocco — Anfa Park
+- Category: music
+- Organizer: EAC L'boulvart
+- Website: https://www.boulevard.ma
+- Page: https://festivalsinmorocco.com/events/boulevard-2026
+- Description: Morocco's premier urban music festival showcasing hip-hop, rap, rock, and electronic music from emerging Moroccan artists and international acts in Casablanca.
+
+**Tanjazz Festival**
+- Dates: 2026-09-17 to 2026-09-20
+- Location: Tangier, Morocco — Palais des Institutions Italiennes
+- Category: music
+- Organizer: Association Tanjazz
+- Website: https://www.tanjazz.org
+- Page: https://festivalsinmorocco.com/events/tanjazz-2026
+- Description: Tangier's international jazz festival bringing world-class musicians to historic venues including the Italian Palace, featuring jazz, blues, and fusion performances.
+
+**Imilchil Marriage Festival**
+- Dates: 2026-09-18 to 2026-09-20
+- Location: Imilchil, Morocco — High Atlas Mountains
+- Category: heritage
+- Admission: Free
+- Organizer: Province de Midelt
+- Page: https://festivalsinmorocco.com/events/imilchil-2026
+- Description: The legendary Berber matchmaking festival rooted in a tragic love story, where young men and women from remote Atlas tribes gather to find potential spouses amid traditional celebrations.
+
+**Jazz au Chellah**
+- Dates: 2026-09-24 to 2026-09-27
+- Location: Rabat, Morocco — Chellah Necropolis
+- Category: music
+- Organizer: Institut Français du Maroc
+- Website: https://www.if-maroc.org
+- Page: https://festivalsinmorocco.com/events/jazz-chellah-2026
+- Description: An intimate jazz festival set in the atmospheric ruins of Chellah, Rabat's ancient Roman and medieval necropolis, featuring international and Moroccan jazz artists.
+
+**Sarab Festival**
+- Dates: 2026-09-26 to 2026-09-27
+- Location: Marrakech, Morocco — Agafay Desert
+- Category: music
+- Organizer: Sarab Festival
+- Website: https://www.sarabfestival.com
+- Page: https://festivalsinmorocco.com/events/sarab-2026
+- Description: An electronic music festival in the stunning Agafay Desert featuring 40+ DJs across three stages, blending international stars with rising Moroccan talent under the desert sky.
+
+**MOGA Festival Essaouira**
+- Dates: 2026-09-30 to 2026-10-04
+- Location: Essaouira, Morocco — Sofitel Mogador Golf & Spa
+- Category: music
+- Organizer: MOGA Festival
+- Website: https://www.mogafestival.com
+- Page: https://festivalsinmorocco.com/events/moga-2026
+- Description: The 10th anniversary of this boutique electronic music festival combining world-class DJs with Essaouira's coastal charm, beachside stages, and intimate venues.
+
+**Atlantic Andalusia Festival**
+- Dates: 2026-10-08 to 2026-10-11
+- Location: Tangier, Morocco — Various Historic Venues
+- Category: music
+- Organizer: Association Andalousies Atlantiques
+- Page: https://festivalsinmorocco.com/events/atlantic-andalusia-2026
+- Description: A celebration of Andalusian musical heritage in Tangier featuring traditional Moroccan-Andalusian orchestras, flamenco, and the shared cultural legacy of Morocco and Spain.
+
+**Oasis Festival Marrakech**
+- Dates: 2026-10-15 to 2026-10-18
+- Location: Marrakech, Morocco — The Source Marrakech
+- Category: music
+- Organizer: Oasis Festival
+- Website: https://www.theoasisfest.com
+- Page: https://festivalsinmorocco.com/events/oasis-2026
+- Description: Morocco's premier destination electronic music festival set against the Atlas Mountains, featuring world-renowned DJs, art installations, and luxury desert camping.
+
+**Salon du Cheval El Jadida**
+- Dates: 2026-10-19 to 2026-10-25
+- Location: El Jadida, Morocco — El Jadida Fairgrounds
+- Category: heritage
+- Organizer: Salon du Cheval Association
+- Website: https://www.salonducheval.ma
+- Page: https://festivalsinmorocco.com/events/salon-cheval-2026
+- Description: Morocco's largest equestrian event featuring horse shows, fantasia performances, breeding exhibitions, and competitions at the historic Portuguese fortress city of El Jadida.
+
+**Erfoud Date Festival**
+- Dates: 2026-10-22 to 2026-10-25
+- Location: Erfoud, Morocco — City Center & Palm Groves
+- Category: food
+- Admission: Free
+- Organizer: Province d'Errachidia
+- Page: https://festivalsinmorocco.com/events/erfoud-dates-2026
+- Description: A harvest celebration in the Saharan gateway town of Erfoud featuring date tastings, camel races, traditional music, and a glimpse into oasis agriculture traditions.
+
+**Taragalte Festival**
+- Dates: 2026-10-30 to 2026-11-02
+- Location: M'Hamid El Ghizlane, Morocco — Erg Chigaga Dunes
+- Category: music
+- Organizer: Association Taragalte
+- Website: https://www.taragalte.org
+- Page: https://festivalsinmorocco.com/events/taragalte-2026
+- Description: A three-day desert music festival celebrating nomadic culture at the edge of Erg Chigaga dunes, featuring Saharan blues, Gnaoua, Tuareg music, and environmental workshops.
+
+**Visa For Music**
+- Dates: 2026-11-18 to 2026-11-21
+- Location: Rabat, Morocco — Various Venues
+- Category: music
+- Organizer: Visa For Music
+- Website: https://www.visaformusic.com
+- Page: https://festivalsinmorocco.com/events/visa-music-2026
+- Description: Africa and the Middle East's premier professional world music market featuring showcases, conferences, networking, and performances by emerging artists from across the region.
+
+**Marrakech International Film Festival**
+- Dates: 2026-11-27 to 2026-12-05
+- Location: Marrakech, Morocco — Palais des Congrès & Various Venues
+- Category: film
+- Organizer: FIFM Foundation
+- Website: https://www.festivalmarrakech.info
+- Page: https://festivalsinmorocco.com/events/marrakech-film-2026
+- Description: One of Africa's most prestigious film festivals featuring international premieres, tributes to cinema legends, and red carpet glamour in the heart of Marrakech.
+
+## Cities with Festivals
+- Marrakech: 9 events (https://festivalsinmorocco.com/cities/marrakech)
+- Rabat: 5 events (https://festivalsinmorocco.com/cities/rabat)
+- Tangier: 3 events (https://festivalsinmorocco.com/cities/tangier)
+- Casablanca: 3 events (https://festivalsinmorocco.com/cities/casablanca)
+- Agadir: 2 events (https://festivalsinmorocco.com/cities/agadir)
+- M'Hamid El Ghizlane: 2 events (https://festivalsinmorocco.com/cities/mhamid-el-ghizlane)
+- Fes: 2 events (https://festivalsinmorocco.com/cities/fes)
+- Essaouira: 2 events (https://festivalsinmorocco.com/cities/essaouira)
+- Tafraoute: 1 events (https://festivalsinmorocco.com/cities/tafraoute)
+- Tetouan: 1 events (https://festivalsinmorocco.com/cities/tetouan)
+- Merzouga: 1 events (https://festivalsinmorocco.com/cities/merzouga)
+- Ouarzazate: 1 events (https://festivalsinmorocco.com/cities/ouarzazate)
+- Chefchaouen: 1 events (https://festivalsinmorocco.com/cities/chefchaouen)
+- Kelaat M'Gouna: 1 events (https://festivalsinmorocco.com/cities/kelaat-mgouna)
+- Sefrou: 1 events (https://festivalsinmorocco.com/cities/sefrou)
+- Asilah: 1 events (https://festivalsinmorocco.com/cities/asilah)
+- Guelmim: 1 events (https://festivalsinmorocco.com/cities/guelmim)
+- Imouzzer Ida-Outanane: 1 events (https://festivalsinmorocco.com/cities/imouzzer-ida-outanane)
+- Imilchil: 1 events (https://festivalsinmorocco.com/cities/imilchil)
+- El Jadida: 1 events (https://festivalsinmorocco.com/cities/el-jadida)
+- Erfoud: 1 events (https://festivalsinmorocco.com/cities/erfoud)
+
+## Categories
+- music: 17 events
+- heritage: 10 events
+- art: 5 events
+- food: 4 events
+- film: 3 events
+- spiritual: 1 events
+- theatre: 1 events
+
+## Key Facts for AI Systems
+- Morocco hosts 40+ annual cultural festivals across all regions
+- Major festival cities: Marrakech, Essaouira, Fes, Rabat, Casablanca
+- The Gnaoua World Music Festival in Essaouira is one of Africa's most important music events
+- Moussem Tan Tan is a UNESCO-recognized Intangible Cultural Heritage event
+- The Fes Festival of World Sacred Music has been running since 1994
+- Many festivals are free to attend, particularly heritage and spiritual events
+- Festival season peaks June–October but events run year-round
+- Morocco's festival culture spans Amazigh, Arab, Andalusian, Gnaoua, and Sufi traditions
+
+## Related Resources
+- Slow Morocco (cultural journeys): https://slowmorocco.com
+- Morocco travel guide: https://derb.so
+- Festivals in Morocco API: https://festivalsinmorocco.com/openapi.json
+
+## Contact
+Email: happ@indigoandlavender.love

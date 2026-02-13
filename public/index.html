@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morocco Events API</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0a0a0a;
+      color: #ededed;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .container { max-width: 600px; width: 100%; }
+    h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    .subtitle { color: #888; margin-bottom: 2rem; }
+    .endpoints { background: #111; border-radius: 8px; padding: 1.5rem; }
+    .endpoint { margin-bottom: 1rem; }
+    .endpoint:last-child { margin-bottom: 0; }
+    .method {
+      display: inline-block;
+      background: #1a472a;
+      color: #4ade80;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    a { color: #60a5fa; text-decoration: none; font-family: monospace; }
+    a:hover { text-decoration: underline; }
+    .desc { color: #888; font-size: 0.875rem; margin-top: 0.25rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Morocco Events</h1>
+    <p class="subtitle">Festivals and music events in Morocco</p>
+
+    <div class="endpoints">
+      <div class="endpoint">
+        <span class="method">GET</span>
+        <a href="/api/events">/api/events</a>
+        <p class="desc">List all events</p>
+      </div>
+      <div class="endpoint">
+        <span class="method">GET</span>
+        <a href="/api/festivals">/api/festivals</a>
+        <p class="desc">Festivals only</p>
+      </div>
+      <div class="endpoint">
+        <span class="method">GET</span>
+        <a href="/api/search?q=gnawa">/api/search?q=gnawa</a>
+        <p class="desc">Search events</p>
+      </div>
+      <div class="endpoint">
+        <span class="method">GET</span>
+        <a href="/api/cities">/api/cities</a>
+        <p class="desc">Cities with event counts</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

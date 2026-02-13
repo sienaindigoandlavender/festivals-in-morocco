@@ -1,0 +1,102 @@
+---
+import Base from '../layouts/Base.astro';
+import { getLegalPageContent } from '../lib/supabase';
+
+// Define which legal pages exist
+export function getStaticPaths() {
+  return [
+    { params: { legal: 'privacy' } },
+    { params: { legal: 'terms' } },
+    { params: { legal: 'disclaimer' } },
+    { params: { legal: 'intellectual-property' } },
+  ];
+}
+
+const { legal } = Astro.params;
+
+// Fetch page content from Nexus
+const pageContent = await getLegalPageContent(legal);
+
+// Handle 404 if page not found
+if (!pageContent) {
+  return Astro.redirect('/404');
+}
+---
+
+<Base title={`${pageContent.page_title} | Festivals in Morocco`} description={`${pageContent.page_title} for Festivals in Morocco`}>
+  <article class="legal-page">
+    <header class="page-header">
+      <h1>{pageContent.page_title}</h1>
+      <p class="last-updated">Last updated: January 2026</p>
+    </header>
+    
+    <div class="content">
+      {pageContent.sections.map((section) => (
+        <section class="legal-section">
+          {section.section_title && <h2>{section.section_title}</h2>}
+          <p set:html={section.section_content.replace(/\n/g, '<br>')} />
+        </section>
+      ))}
+    </div>
+  </article>
+</Base>
+
+<style>
+  .legal-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 0 4rem;
+  }
+
+  .page-header {
+    margin-bottom: 3rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-header h1 {
+    font-family: var(--font-serif);
+    font-size: 2.5rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+
+  .last-updated {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+
+  .content {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--text);
+  }
+
+  .legal-section {
+    margin-bottom: 2.5rem;
+  }
+
+  .legal-section h2 {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  .legal-section p {
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .legal-section p:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 640px) {
+    .page-header h1 {
+      font-size: 1.75rem;
+    }
+  }
+</style>

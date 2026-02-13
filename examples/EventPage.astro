@@ -1,0 +1,290 @@
+---
+/**
+ * Event Detail Page
+ *
+ * Route: /events/[slug]
+ * Purpose: Answer queries for "{event name}", "{event name} tickets"
+ *
+ * No decorative content. Data only.
+ */
+
+import type { Event } from '../types';
+
+interface Props {
+  event: Event;
+}
+
+const { event } = Astro.props;
+
+const dateFormatter = new Intl.DateTimeFormat('en-GB', {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const startDate = new Date(event.start_date);
+const endDate = event.end_date ? new Date(event.end_date) : null;
+
+const dateDisplay = endDate
+  ? `${dateFormatter.format(startDate)} - ${dateFormatter.format(endDate)}`
+  : dateFormatter.format(startDate);
+
+// Schema.org structured data
+const schemaOrg = {
+  '@context': 'https://schema.org',
+  '@type': event.event_type === 'festival' ? 'Festival' : 'MusicEvent',
+  name: event.name,
+  startDate: event.start_date,
+  endDate: event.end_date || event.start_date,
+  location: {
+    '@type': 'Place',
+    name: event.venue?.name || event.city.name,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: event.city.name,
+      addressRegion: event.region.name,
+      addressCountry: 'MA',
+    },
+  },
+  performer: event.artists.map((artist) => ({
+    '@type': 'MusicGroup',
+    name: artist.name,
+  })),
+  eventStatus: event.status === 'cancelled'
+    ? 'https://schema.org/EventCancelled'
+    : 'https://schema.org/EventScheduled',
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  ...(event.ticket_urls.length > 0 && {
+    offers: {
+      '@type': 'Offer',
+      url: event.ticket_urls[0].url,
+      availability: 'https://schema.org/InStock',
+    },
+  }),
+  ...(event.official_website && {
+    url: event.official_website,
+  }),
+};
+
+const title = `${event.name} | Morocco Events`;
+const description = `${event.name} - ${dateDisplay} in ${event.city.name}. ${event.genres.join(', ')} ${event.event_type}.`;
+---
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={`https://moroccoevents.com/events/${event.slug}`} />
+
+  <!-- Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(schemaOrg)} />
+</head>
+<body>
+  <main>
+    <article itemscope itemtype={`https://schema.org/${event.event_type === 'festival' ? 'Festival' : 'MusicEvent'}`}>
+
+      <!-- Status indicator -->
+      {event.status === 'cancelled' && (
+        <p class="status-cancelled">This event has been cancelled.</p>
+      )}
+
+      <!-- Header -->
+      <header>
+        <h1 itemprop="name">{event.name}</h1>
+        {event.is_verified && <span class="verified" title="Verified event">Verified</span>}
+      </header>
+
+      <!-- Date & Location -->
+      <section class="when-where">
+        <dl>
+          <dt>Date</dt>
+          <dd>
+            <time itemprop="startDate" datetime={event.start_date}>
+              {dateDisplay}
+            </time>
+          </dd>
+
+          <dt>Location</dt>
+          <dd itemprop="location" itemscope itemtype="https://schema.org/Place">
+            {event.venue && (
+              <span itemprop="name">{event.venue.name}, </span>
+            )}
+            <a href={`/cities/${event.city.slug}`} itemprop="address">
+              {event.city.name}
+            </a>,
+            <a href={`/regions/${event.region.slug}`}>
+              {event.region.name}
+            </a>
+          </dd>
+
+          {event.genres.length > 0 && (
+            <>
+              <dt>Genre</dt>
+              <dd>
+                {event.genres.map((genre, i) => (
+                  <>
+                    <a href={`/genres/${genre.toLowerCase().replace(/\s+/g, '-')}`}>{genre}</a>
+                    {i < event.genres.length - 1 && ', '}
+                  </>
+                ))}
+              </dd>
+            </>
+          )}
+        </dl>
+      </section>
+
+      <!-- Artists -->
+      {event.artists.length > 0 && (
+        <section class="lineup">
+          <h2>Lineup</h2>
+          <ul>
+            {event.artists.map((artist) => (
+              <li itemprop="performer" itemscope itemtype="https://schema.org/MusicGroup">
+                <a href={`/artists/${artist.slug}`} itemprop="name">{artist.name}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <!-- Tickets -->
+      {event.ticket_urls.length > 0 && (
+        <section class="tickets">
+          <h2>Tickets</h2>
+          <ul>
+            {event.ticket_urls.map((ticket) => (
+              <li>
+                <a
+                  href={ticket.url}
+                  rel="noopener noreferrer nofollow"
+                  target="_blank"
+                  itemprop="offers"
+                  itemscope
+                  itemtype="https://schema.org/Offer"
+                >
+                  {ticket.is_official ? 'Official tickets' : `Tickets via ${ticket.provider || 'external'}`}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <!-- Official Website -->
+      {event.official_website && (
+        <section class="official">
+          <a href={event.official_website} rel="noopener noreferrer" target="_blank">
+            Official website
+          </a>
+        </section>
+      )}
+
+      <!-- Organizer -->
+      {event.organizer && (
+        <section class="organizer">
+          <p>
+            Organized by <span itemprop="organizer">{event.organizer.name}</span>
+          </p>
+        </section>
+      )}
+
+    </article>
+
+    <!-- Navigation -->
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="/">Events</a></li>
+        <li><a href={`/cities/${event.city.slug}`}>{event.city.name}</a></li>
+        <li aria-current="page">{event.name}</li>
+      </ol>
+    </nav>
+
+  </main>
+</body>
+</html>
+
+<style>
+  /* Minimal, functional styling */
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    line-height: 1.5;
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .verified {
+    display: inline-block;
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    background: #e8f5e9;
+    color: #2e7d32;
+    border-radius: 0.25rem;
+  }
+
+  .status-cancelled {
+    background: #ffebee;
+    color: #c62828;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    gap: 0.25rem 1rem;
+  }
+
+  dt {
+    font-weight: 600;
+    color: #666;
+  }
+
+  section {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+  }
+
+  h2 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    padding: 0.25rem 0;
+  }
+
+  a {
+    color: #1565c0;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .breadcrumb ol {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .breadcrumb li:not(:last-child)::after {
+    content: '/';
+    margin-left: 0.5rem;
+    color: #999;
+  }
+</style>

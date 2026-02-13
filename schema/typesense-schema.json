@@ -1,0 +1,160 @@
+{
+  "name": "events",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "infix": true
+    },
+    {
+      "name": "slug",
+      "type": "string",
+      "index": false
+    },
+    {
+      "name": "event_type",
+      "type": "string",
+      "facet": true
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "optional": true
+    },
+    {
+      "name": "start_date",
+      "type": "int64",
+      "facet": true
+    },
+    {
+      "name": "end_date",
+      "type": "int64",
+      "optional": true
+    },
+    {
+      "name": "year",
+      "type": "int32",
+      "facet": true
+    },
+    {
+      "name": "month",
+      "type": "int32",
+      "facet": true
+    },
+    {
+      "name": "city_id",
+      "type": "int32",
+      "facet": true
+    },
+    {
+      "name": "city_name",
+      "type": "string",
+      "facet": true
+    },
+    {
+      "name": "city_slug",
+      "type": "string",
+      "index": false
+    },
+    {
+      "name": "region_id",
+      "type": "int32",
+      "facet": true
+    },
+    {
+      "name": "region_name",
+      "type": "string",
+      "facet": true
+    },
+    {
+      "name": "region_slug",
+      "type": "string",
+      "index": false
+    },
+    {
+      "name": "venue_name",
+      "type": "string",
+      "optional": true
+    },
+    {
+      "name": "venue_slug",
+      "type": "string",
+      "optional": true,
+      "index": false
+    },
+    {
+      "name": "geo_location",
+      "type": "geopoint",
+      "optional": true
+    },
+    {
+      "name": "genres",
+      "type": "string[]",
+      "facet": true
+    },
+    {
+      "name": "genre_slugs",
+      "type": "string[]",
+      "facet": true
+    },
+    {
+      "name": "artists",
+      "type": "string[]",
+      "infix": true
+    },
+    {
+      "name": "artist_slugs",
+      "type": "string[]",
+      "index": false
+    },
+    {
+      "name": "organizer_name",
+      "type": "string",
+      "optional": true
+    },
+    {
+      "name": "official_website",
+      "type": "string",
+      "optional": true,
+      "index": false
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "facet": true
+    },
+    {
+      "name": "confidence_score",
+      "type": "float"
+    },
+    {
+      "name": "is_verified",
+      "type": "bool",
+      "facet": true
+    },
+    {
+      "name": "is_pinned",
+      "type": "bool"
+    },
+    {
+      "name": "cultural_significance",
+      "type": "int32"
+    },
+    {
+      "name": "has_tickets",
+      "type": "bool",
+      "facet": true
+    },
+    {
+      "name": "updated_at",
+      "type": "int64"
+    }
+  ],
+  "default_sorting_field": "start_date",
+  "token_separators": ["-", "'", "'"],
+  "symbols_to_index": ["&"]
+}

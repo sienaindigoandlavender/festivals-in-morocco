@@ -1,0 +1,363 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getTraditions, getEventsByTradition, TraditionCategoryLabels, MUSIC_TRADITIONS } from '../../lib/api';
+
+export function getStaticPaths() {
+  const traditions = getTraditions();
+  return traditions.map(tradition => ({
+    params: { id: tradition.id },
+    props: { tradition }
+  }));
+}
+
+const { tradition } = Astro.props;
+const fullTradition = MUSIC_TRADITIONS[tradition.id];
+const events = getEventsByTradition(tradition.id);
+
+events.sort((a, b) => {
+  return (a.timing?.gregorian_start || '').localeCompare(b.timing?.gregorian_start || '');
+});
+
+const categoryLabel = TraditionCategoryLabels[tradition.category] || tradition.category;
+
+const traditionSchema = {
+  "@context": "https://schema.org",
+  "@type": "DefinedTerm",
+  "name": tradition.name,
+  ...(fullTradition?.name_ar ? { "alternateName": fullTradition.name_ar } : {}),
+  "description": fullTradition?.description || `${tradition.name} is a cultural tradition in Morocco associated with ${events.length} festivals and events.`,
+  "inDefinedTermSet": {
+    "@type": "DefinedTermSet",
+    "name": "Moroccan Cultural Traditions",
+    "url": "https://festivalsinmorocco.com/traditions"
+  }
+};
+
+const traditionBreadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://festivalsinmorocco.com" },
+    { "@type": "ListItem", "position": 2, "name": "Traditions", "item": "https://festivalsinmorocco.com/traditions" },
+    { "@type": "ListItem", "position": 3, "name": tradition.name }
+  ]
+};
+---
+
+<Base
+  title={`${tradition.name} — Festivals in Morocco`}
+  description={fullTradition?.description || `Events featuring ${tradition.name} in Morocco`}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(traditionSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(traditionBreadcrumb)} />
+  <div class="page-header">
+    <nav class="breadcrumb">
+      <a href="/">Home</a>
+      <span>/</span>
+      <a href="/traditions">Traditions</a>
+      <span>/</span>
+      <span>{tradition.name}</span>
+    </nav>
+
+    <div class="tradition-meta">
+      <span class="micro-label">{categoryLabel}</span>
+      {tradition.sacred && <span class="sacred-badge">Sacred</span>}
+    </div>
+
+    <h1>{tradition.name}</h1>
+    {fullTradition?.name_ar && <p class="name-ar">{fullTradition.name_ar}</p>}
+    {fullTradition?.name_tzm && <p class="name-tzm">{fullTradition.name_tzm}</p>}
+    
+    <p class="event-count">{events.length} events featuring this tradition</p>
+  </div>
+
+  <!-- Description -->
+  {fullTradition?.description && (
+    <section class="description-block">
+      <h2>About</h2>
+      <p>{fullTradition.description}</p>
+      {fullTradition.regions && fullTradition.regions.length > 0 && (
+        <div class="regions">
+          <span class="micro-label">Regions</span>
+          <p>{fullTradition.regions.join(', ')}</p>
+        </div>
+      )}
+    </section>
+  )}
+
+  <!-- Events -->
+  <section class="events-section">
+    <header class="section-header">
+      <h2>Events</h2>
+      <span class="section-count">{events.length}</span>
+    </header>
+
+    <div class="events-list">
+      {events.map((event) => (
+        <a href={`/events/${event.slug || event.id}`} class="event-item">
+          <div class="event-item__date">
+            {event.timing?.gregorian_start && (
+              <>
+                <span class="date-day">{new Date(event.timing.gregorian_start).getDate().toString().padStart(2, '0')}</span>
+                <span class="date-month">{new Date(event.timing.gregorian_start).toLocaleDateString('en-GB', { month: 'short' }).toUpperCase()}</span>
+              </>
+            )}
+          </div>
+          <div class="event-item__content">
+            <h3>{event.name}</h3>
+            <p class="event-location">
+              {event.location?.city_en || event.location?.venue_name || 'Morocco'}
+            </p>
+          </div>
+          <div class="event-item__arrow">→</div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  {events.length === 0 && (
+    <div class="no-results">
+      <p>No events currently listed featuring {tradition.name}.</p>
+      <a href="/events" class="btn">Browse all events</a>
+    </div>
+  )}
+
+  <nav class="back-nav">
+    <a href="/traditions">← Back to all traditions</a>
+  </nav>
+</Base>
+
+<style>
+  .page-header {
+    padding: var(--space-xl) 0 var(--space-lg);
+    border-bottom: 1px solid var(--stone);
+    margin-bottom: var(--space-lg);
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: var(--space-md);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .breadcrumb a {
+    color: var(--warm-gray);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .breadcrumb a:hover {
+    color: var(--ink);
+  }
+
+  .breadcrumb span {
+    color: var(--sand);
+  }
+
+  .tradition-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: 0.5rem;
+  }
+
+  .sacred-badge {
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--terracotta);
+    padding: 0.25rem 0.5rem;
+    border: 1px solid var(--terracotta);
+  }
+
+  .page-header h1 {
+    margin-bottom: 0.25rem;
+  }
+
+  .name-ar,
+  .name-tzm {
+    font-size: 1.5rem;
+    color: var(--warm-gray);
+    margin-bottom: 0.25rem;
+  }
+
+  .event-count {
+    font-size: 0.9375rem;
+    color: var(--charcoal-soft);
+    margin-top: var(--space-sm);
+  }
+
+  /* Description Block */
+  .description-block {
+    padding: var(--space-lg);
+    background: var(--paper-warm);
+    border-left: 3px solid var(--terracotta);
+    margin-bottom: var(--space-xl);
+  }
+
+  .description-block h2 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--warm-gray);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    margin-bottom: var(--space-sm);
+  }
+
+  .description-block > p {
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    color: var(--charcoal);
+  }
+
+  .regions {
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--stone);
+  }
+
+  .regions .micro-label {
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .regions p {
+    font-size: 0.9375rem;
+    color: var(--charcoal-soft);
+  }
+
+  /* Events Section */
+  .events-section {
+    margin-bottom: var(--space-xl);
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--stone);
+  }
+
+  .section-header h2 {
+    margin: 0;
+  }
+
+  .section-count {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    color: var(--stone-dark);
+    line-height: 1;
+  }
+
+  .events-list {
+    border-top: 1px solid var(--stone);
+  }
+
+  .event-item {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: var(--space-md);
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid var(--stone);
+    align-items: center;
+    transition: all var(--duration) var(--ease-out);
+  }
+
+  .event-item:hover {
+    background: var(--paper-warm);
+    padding-left: var(--space-sm);
+    padding-right: var(--space-sm);
+    margin: 0 calc(-1 * var(--space-sm));
+  }
+
+  .event-item__date {
+    text-align: center;
+    line-height: 1;
+  }
+
+  .event-item__date .date-day {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    color: var(--ink);
+  }
+
+  .event-item__date .date-month {
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    color: var(--warm-gray);
+  }
+
+  .event-item__content h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.125rem;
+    color: var(--ink);
+  }
+
+  .event-location {
+    font-size: 0.8125rem;
+    color: var(--warm-gray);
+  }
+
+  .event-item__arrow {
+    font-size: 1.25rem;
+    color: var(--sand);
+    transition: transform var(--duration) var(--ease-out), color var(--duration) var(--ease-out);
+  }
+
+  .event-item:hover .event-item__arrow {
+    transform: translateX(4px);
+    color: var(--ink);
+  }
+
+  /* No Results */
+  .no-results {
+    text-align: center;
+    padding: var(--space-2xl) 0;
+    color: var(--warm-gray);
+  }
+
+  .no-results .btn {
+    margin-top: var(--space-md);
+  }
+
+  /* Back Nav */
+  .back-nav {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--stone);
+  }
+
+  .back-nav a {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--warm-gray);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .back-nav a:hover {
+    color: var(--ink);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .event-item {
+      grid-template-columns: 60px 1fr auto;
+    }
+
+    .event-item__date .date-day {
+      font-size: 1.25rem;
+    }
+
+    .event-item__content h3 {
+      font-size: 1.0625rem;
+    }
+  }
+</style>

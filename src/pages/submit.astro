@@ -1,0 +1,436 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Submit an Event - Festivals in Morocco" description="Submit your festival, concert, or cultural event to be listed on Festivals in Morocco.">
+  <div class="submit-page">
+    <header class="page-header">
+      <h1>Submit an Event</h1>
+      <p class="page-intro">Know of a festival, concert, or cultural event happening in Morocco? Share it with us and help others discover Morocco's vibrant cultural scene.</p>
+    </header>
+
+    <form class="submit-form" action="mailto:happ@indigoandlavender.love" method="POST" enctype="text/plain" id="submit-form">
+      <!-- Event Details -->
+      <section class="form-section">
+        <h2>Event Details</h2>
+        
+        <div class="field">
+          <input type="text" name="event_name" id="event_name" required placeholder=" ">
+          <label for="event_name">Event Name *</label>
+        </div>
+
+        <div class="field">
+          <input type="text" name="event_name_ar" id="event_name_ar" placeholder=" ">
+          <label for="event_name_ar">Event Name (Arabic)</label>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <select name="event_type" id="event_type" required>
+              <option value="" disabled selected></option>
+              <option value="festival">Festival</option>
+              <option value="concert">Concert</option>
+              <option value="art">Art Exhibition</option>
+              <option value="heritage">Heritage Event</option>
+              <option value="cultural">Cultural Event</option>
+              <option value="sports">Sports Event</option>
+              <option value="other">Other</option>
+            </select>
+            <label for="event_type">Event Type *</label>
+          </div>
+
+          <div class="field">
+            <select name="recurrence" id="recurrence">
+              <option value="" disabled selected></option>
+              <option value="one-time">One-time</option>
+              <option value="annual">Annual</option>
+              <option value="monthly">Monthly</option>
+              <option value="variable">Variable</option>
+            </select>
+            <label for="recurrence">Recurrence</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <textarea name="description" id="description" rows="4" required placeholder=" "></textarea>
+          <label for="description">Description *</label>
+        </div>
+      </section>
+
+      <!-- Date & Location -->
+      <section class="form-section">
+        <h2>Date & Location</h2>
+        
+        <div class="field-row">
+          <div class="field">
+            <input type="date" name="start_date" id="start_date" required placeholder=" ">
+            <label for="start_date">Start Date *</label>
+          </div>
+
+          <div class="field">
+            <input type="date" name="end_date" id="end_date" placeholder=" ">
+            <label for="end_date">End Date</label>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <input type="text" name="city" id="city" required placeholder=" ">
+            <label for="city">City *</label>
+          </div>
+
+          <div class="field">
+            <select name="region" id="region" required>
+              <option value="" disabled selected></option>
+              <option value="tanger-tetouan-al-hoceima">Tanger-Tétouan-Al Hoceïma</option>
+              <option value="oriental">Oriental</option>
+              <option value="fes-meknes">Fès-Meknès</option>
+              <option value="rabat-sale-kenitra">Rabat-Salé-Kénitra</option>
+              <option value="beni-mellal-khenifra">Béni Mellal-Khénifra</option>
+              <option value="casablanca-settat">Casablanca-Settat</option>
+              <option value="marrakech-safi">Marrakech-Safi</option>
+              <option value="draa-tafilalet">Drâa-Tafilalet</option>
+              <option value="souss-massa">Souss-Massa</option>
+              <option value="guelmim-oued-noun">Guelmim-Oued Noun</option>
+              <option value="laayoune-sakia-el-hamra">Laâyoune-Sakia El Hamra</option>
+              <option value="dakhla-oued-ed-dahab">Dakhla-Oued Ed-Dahab</option>
+            </select>
+            <label for="region">Region *</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <input type="text" name="venue" id="venue" placeholder=" ">
+          <label for="venue">Venue Name</label>
+        </div>
+      </section>
+
+      <!-- Traditions & Tags -->
+      <section class="form-section">
+        <h2>Traditions & Tags</h2>
+        
+        <div class="checkbox-group">
+          <p class="checkbox-label">Featured traditions or themes (select all that apply)</p>
+          <div class="checkbox-grid">
+            <label class="checkbox">
+              <input type="checkbox" name="traditions" value="amazigh">
+              <span>Amazigh</span>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" name="traditions" value="andalusi">
+              <span>Andalusi</span>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" name="traditions" value="gnawa">
+              <span>Gnawa</span>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" name="traditions" value="film">
+              <span>Film</span>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" name="traditions" value="visual-arts">
+              <span>Visual Arts</span>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" name="traditions" value="crafts">
+              <span>Traditional Crafts</span>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" name="traditions" value="food">
+              <span>Food & Culinary</span>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" name="traditions" value="sports">
+              <span>Sports</span>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" name="traditions" value="contemporary">
+              <span>Contemporary</span>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" name="traditions" value="other">
+              <span>Other</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <input type="text" name="artists" id="artists" placeholder=" ">
+          <label for="artists">Featured Artists / Participants (comma-separated)</label>
+        </div>
+      </section>
+
+      <!-- Links & Contact -->
+      <section class="form-section">
+        <h2>Links & Contact</h2>
+        
+        <div class="field">
+          <input type="url" name="website" id="website" placeholder=" ">
+          <label for="website">Official Website</label>
+        </div>
+
+        <div class="field">
+          <input type="url" name="tickets" id="tickets" placeholder=" ">
+          <label for="tickets">Ticket URL</label>
+        </div>
+
+        <div class="field">
+          <input type="text" name="organizer" id="organizer" placeholder=" ">
+          <label for="organizer">Organizer Name</label>
+        </div>
+      </section>
+
+      <!-- Your Info -->
+      <section class="form-section">
+        <h2>Your Information</h2>
+        
+        <div class="field-row">
+          <div class="field">
+            <input type="text" name="submitter_name" id="submitter_name" required placeholder=" ">
+            <label for="submitter_name">Your Name *</label>
+          </div>
+
+          <div class="field">
+            <input type="email" name="submitter_email" id="submitter_email" required placeholder=" ">
+            <label for="submitter_email">Your Email *</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <textarea name="notes" id="notes" rows="3" placeholder=" "></textarea>
+          <label for="notes">Additional Notes</label>
+        </div>
+      </section>
+
+      <div class="form-footer">
+        <p class="form-note">* Required fields. We'll review your submission and may reach out for additional details.</p>
+        <button type="submit" class="submit-btn">
+          <span>Submit Event</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m5 12h14m-7-7 7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </form>
+  </div>
+</Base>
+
+<script>
+  const form = document.getElementById('submit-form');
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = form.querySelector('.submit-btn');
+    const originalText = btn?.innerHTML;
+    if (btn) btn.innerHTML = '<span>Submitting...</span>';
+    
+    // For now, just show success (you'll wire up the actual API)
+    setTimeout(() => {
+      if (btn) btn.innerHTML = '<span>✓ Submitted!</span>';
+      setTimeout(() => {
+        if (btn) btn.innerHTML = originalText || '';
+        form.reset();
+      }, 2000);
+    }, 1000);
+  });
+</script>
+
+<style>
+  .submit-page {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 6rem 1.5rem 4rem;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .page-intro {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .submit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .form-section h2 {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Underline Input Style */
+  .field {
+    position: relative;
+    margin-bottom: 1.75rem;
+  }
+
+  .field input,
+  .field textarea,
+  .field select {
+    width: 100%;
+    padding: 0.75rem 0;
+    font-size: 1rem;
+    font-family: var(--font-sans);
+    color: var(--text);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .field input:focus,
+  .field textarea:focus,
+  .field select:focus {
+    border-bottom-color: var(--accent);
+  }
+
+  .field label {
+    position: absolute;
+    left: 0;
+    top: 0.75rem;
+    font-size: 1rem;
+    color: var(--text-muted);
+    pointer-events: none;
+    transition: all 0.2s ease;
+  }
+
+  .field input:focus + label,
+  .field input:not(:placeholder-shown) + label,
+  .field textarea:focus + label,
+  .field textarea:not(:placeholder-shown) + label,
+  .field select:focus + label,
+  .field select:valid + label {
+    top: -0.75rem;
+    font-size: 0.75rem;
+    color: var(--accent);
+  }
+
+  .field select {
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B665E' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0 center;
+  }
+
+  .field textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  /* Checkbox Group */
+  .checkbox-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .checkbox-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+
+  .checkbox input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  /* Form Footer */
+  .form-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding-top: 1rem;
+  }
+
+  .form-note {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  .submit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .submit-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+  }
+
+  .submit-btn svg {
+    transition: transform 0.2s;
+  }
+
+  .submit-btn:hover svg {
+    transform: translateX(4px);
+  }
+
+  /* Mobile */
+  @media (max-width: 640px) {
+    .page-header h1 {
+      font-size: 2rem;
+    }
+
+    .field-row {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    .checkbox-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

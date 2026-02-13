@@ -1,0 +1,59 @@
+{
+  "id": 42,
+  "name": "Festival Gnaoua et Musiques du Monde 2025",
+  "slug": "festival-gnaoua-et-musiques-du-monde-2025",
+  "event_type": "festival",
+  "start_date": "2025-06-26",
+  "end_date": "2025-06-29",
+  "city": {
+    "id": 12,
+    "name": "Essaouira",
+    "slug": "essaouira"
+  },
+  "region": {
+    "id": 7,
+    "name": "Marrakech-Safi",
+    "slug": "marrakech-safi"
+  },
+  "venue": {
+    "id": 8,
+    "name": "Place Moulay Hassan",
+    "slug": "place-moulay-hassan"
+  },
+  "genres": ["Gnawa", "World Music", "Jazz"],
+  "artists": [
+    {
+      "id": 101,
+      "name": "Maalem Hamid El Kasri",
+      "slug": "maalem-hamid-el-kasri",
+      "billing_order": 1
+    },
+    {
+      "id": 102,
+      "name": "Hindi Zahra",
+      "slug": "hindi-zahra",
+      "billing_order": 2
+    },
+    {
+      "id": 103,
+      "name": "Oum",
+      "slug": "oum",
+      "billing_order": 3
+    }
+  ],
+  "organizer": {
+    "id": 5,
+    "name": "Association Yerma Gnaoua"
+  },
+  "official_website": "https://festival-gnaoua.net",
+  "ticket_urls": [
+    {
+      "url": "https://festival-gnaoua.net/billetterie",
+      "provider": "official",
+      "is_official": true
+    }
+  ],
+  "status": "confirmed",
+  "is_verified": true,
+  "confidence_score": 0.95
+}

@@ -1,0 +1,401 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCities, getEventsByCity, MUSIC_TRADITIONS } from '../../lib/api';
+
+export function getStaticPaths() {
+  const cities = getCities();
+  return cities.map(city => ({
+    params: { slug: city.slug },
+    props: { city }
+  }));
+}
+
+const { city } = Astro.props;
+const events = getEventsByCity(city.slug);
+
+// Sort events by date
+events.sort((a, b) => {
+  return (a.timing?.gregorian_start || '').localeCompare(b.timing?.gregorian_start || '');
+});
+
+// Get unique traditions
+const allTraditions = events.flatMap(e => e.traditions || []);
+const traditionCounts = new Map<string, number>();
+allTraditions.forEach(tid => {
+  traditionCounts.set(tid, (traditionCounts.get(tid) || 0) + 1);
+});
+
+const topTraditions = [...traditionCounts.entries()]
+  .sort((a, b) => b[1] - a[1])
+  .map(([tid]) => MUSIC_TRADITIONS[tid])
+  .filter(Boolean);
+
+const definitionText = `${city.name} is a city in ${city.region}, Morocco. It hosts ${events.length} cultural events and festivals.`;
+
+const placeSchema = {
+  "@context": "https://schema.org",
+  "@type": "City",
+  "name": city.name,
+  ...(city.name_ar ? { "alternateName": city.name_ar } : {}),
+  "containedIn": {
+    "@type": "AdministrativeArea",
+    "name": city.region
+  },
+  "containedInPlace": {
+    "@type": "Country",
+    "name": "Morocco",
+    "identifier": "MA"
+  },
+  "description": definitionText,
+  "url": `https://festivalsinmorocco.com/cities/${city.slug}`
+};
+
+const cityBreadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://festivalsinmorocco.com" },
+    { "@type": "ListItem", "position": 2, "name": "Cities", "item": "https://festivalsinmorocco.com/cities" },
+    { "@type": "ListItem", "position": 3, "name": city.name }
+  ]
+};
+
+const cityFaqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": `What festivals are held in ${city.name}, Morocco?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `${city.name} hosts ${events.length} cultural events and festivals${events.length > 0 ? ', including ' + events.slice(0, 3).map((e: any) => e.name || e.title_en).join(', ') : ''}.`
+      }
+    }
+  ]
+};
+
+function formatDate(timing: any): string {
+  if (!timing?.gregorian_start) return '';
+  const date = new Date(timing.gregorian_start);
+  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+}
+---
+
+<Base title={`${city.name} — Festivals in Morocco`} description={definitionText}>
+  <script type="application/ld+json" set:html={JSON.stringify(placeSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(cityBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(cityFaqSchema)} />
+  
+  <div class="page-header">
+    <nav class="breadcrumb">
+      <a href="/">Home</a>
+      <span>/</span>
+      <a href="/cities">Cities</a>
+      <span>/</span>
+      <span>{city.name}</span>
+    </nav>
+
+    <span class="micro-label">{city.region}, Morocco</span>
+    <h1>{city.name}</h1>
+    {city.name_ar && <p class="city-ar">{city.name_ar}</p>}
+    <p class="event-count">{events.length} cultural events</p>
+  </div>
+
+  <!-- Definition Block -->
+  <section class="definition-block">
+    <h2>About</h2>
+    <p>{definitionText}</p>
+  </section>
+
+  <!-- Traditions -->
+  {topTraditions.length > 0 && (
+    <section class="traditions-section">
+      <span class="micro-label">Featured Traditions</span>
+      <div class="tradition-tags">
+        {topTraditions.slice(0, 6).map(tradition => (
+          <a href={`/traditions/${tradition.id}`} class="tradition-tag">
+            {tradition.name}
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Events List -->
+  <section class="events-section">
+    <header class="section-header">
+      <h2>Events</h2>
+      <span class="section-count">{events.length}</span>
+    </header>
+
+    <div class="events-list">
+      {events.map((event) => (
+        <a href={`/events/${event.slug || event.id}`} class="event-item">
+          <div class="event-item__date">
+            {event.timing?.gregorian_start && (
+              <>
+                <span class="date-day">{new Date(event.timing.gregorian_start).getDate().toString().padStart(2, '0')}</span>
+                <span class="date-month">{new Date(event.timing.gregorian_start).toLocaleDateString('en-GB', { month: 'short' }).toUpperCase()}</span>
+              </>
+            )}
+          </div>
+          <div class="event-item__content">
+            <h3>{event.name}</h3>
+            {event.location?.venue_name && (
+              <p class="event-venue">{event.location.venue_name}</p>
+            )}
+          </div>
+          <div class="event-item__arrow">→</div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  {events.length === 0 && (
+    <div class="no-results">
+      <p>No events currently listed for {city.name}.</p>
+      <a href="/events" class="btn">Browse all events</a>
+    </div>
+  )}
+
+  <nav class="back-nav">
+    <a href="/cities">← Back to all cities</a>
+  </nav>
+</Base>
+
+<style>
+  .page-header {
+    padding: var(--space-xl) 0 var(--space-lg);
+    border-bottom: 1px solid var(--stone);
+    margin-bottom: var(--space-lg);
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: var(--space-md);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .breadcrumb a {
+    color: var(--warm-gray);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .breadcrumb a:hover {
+    color: var(--ink);
+  }
+
+  .breadcrumb span {
+    color: var(--sand);
+  }
+
+  .page-header .micro-label {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-header h1 {
+    margin-bottom: 0.25rem;
+  }
+
+  .city-ar {
+    font-size: 1.5rem;
+    color: var(--warm-gray);
+    margin-bottom: var(--space-sm);
+  }
+
+  .event-count {
+    font-size: 0.9375rem;
+    color: var(--charcoal-soft);
+  }
+
+  /* Definition Block */
+  .definition-block {
+    padding: var(--space-lg);
+    background: var(--paper-warm);
+    border-left: 3px solid var(--terracotta);
+    margin-bottom: var(--space-xl);
+  }
+
+  .definition-block h2 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--warm-gray);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    margin-bottom: var(--space-sm);
+  }
+
+  .definition-block p {
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    color: var(--charcoal);
+  }
+
+  /* Traditions */
+  .traditions-section {
+    margin-bottom: var(--space-xl);
+  }
+
+  .traditions-section .micro-label {
+    display: block;
+    margin-bottom: var(--space-sm);
+  }
+
+  .tradition-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tradition-tag {
+    padding: 0.5rem 1rem;
+    background: var(--paper);
+    border: 1px solid var(--stone);
+    font-size: 0.8125rem;
+    transition: all var(--duration) var(--ease-out);
+  }
+
+  .tradition-tag:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+
+  /* Events Section */
+  .events-section {
+    margin-bottom: var(--space-xl);
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--stone);
+  }
+
+  .section-header h2 {
+    margin: 0;
+  }
+
+  .section-count {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    color: var(--stone-dark);
+    line-height: 1;
+  }
+
+  .events-list {
+    border-top: 1px solid var(--stone);
+  }
+
+  .event-item {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: var(--space-md);
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid var(--stone);
+    align-items: center;
+    transition: all var(--duration) var(--ease-out);
+  }
+
+  .event-item:hover {
+    background: var(--paper-warm);
+    padding-left: var(--space-sm);
+    padding-right: var(--space-sm);
+    margin: 0 calc(-1 * var(--space-sm));
+  }
+
+  .event-item__date {
+    text-align: center;
+    line-height: 1;
+  }
+
+  .event-item__date .date-day {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    color: var(--ink);
+  }
+
+  .event-item__date .date-month {
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    color: var(--warm-gray);
+  }
+
+  .event-item__content h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.125rem;
+    color: var(--ink);
+  }
+
+  .event-venue {
+    font-size: 0.8125rem;
+    color: var(--warm-gray);
+  }
+
+  .event-item__arrow {
+    font-size: 1.25rem;
+    color: var(--sand);
+    transition: transform var(--duration) var(--ease-out), color var(--duration) var(--ease-out);
+  }
+
+  .event-item:hover .event-item__arrow {
+    transform: translateX(4px);
+    color: var(--ink);
+  }
+
+  /* No Results */
+  .no-results {
+    text-align: center;
+    padding: var(--space-2xl) 0;
+    color: var(--warm-gray);
+  }
+
+  .no-results .btn {
+    margin-top: var(--space-md);
+  }
+
+  /* Back Nav */
+  .back-nav {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--stone);
+  }
+
+  .back-nav a {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--warm-gray);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .back-nav a:hover {
+    color: var(--ink);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .event-item {
+      grid-template-columns: 60px 1fr auto;
+    }
+
+    .event-item__date .date-day {
+      font-size: 1.25rem;
+    }
+
+    .event-item__content h3 {
+      font-size: 1.0625rem;
+    }
+  }
+</style>

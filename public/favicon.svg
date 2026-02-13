@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Moroccan 8-pointed star in terracotta -->
+  <g transform="translate(16, 16)">
+    <!-- Outer star -->
+    <polygon points="0,-14 3,-5 12,-5 5,1 7,10 0,5 -7,10 -5,1 -12,-5 -3,-5" fill="#C75B39"/>
+    <!-- Inner star rotated 45deg -->
+    <polygon points="0,-10 2,-4 8,-4 4,0 5,7 0,4 -5,7 -4,0 -8,-4 -2,-4" fill="#B8705B" transform="rotate(22.5)"/>
+    <!-- Center circle -->
+    <circle cx="0" cy="0" r="3" fill="#D4846A"/>
+  </g>
+</svg>

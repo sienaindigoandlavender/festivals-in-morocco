@@ -1,0 +1,359 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getTraditions, TraditionCategory } from '../../lib/api';
+
+const traditions = getTraditions();
+
+const rootedTraditions = traditions.filter(t => t.category === TraditionCategory.ROOTED);
+const hybridTraditions = traditions.filter(t => t.category === TraditionCategory.HYBRID);
+const importedTraditions = traditions.filter(t => t.category === TraditionCategory.IMPORTED);
+---
+
+<Base title="Cultural Traditions — Festivals in Morocco">
+  <div class="page-header">
+    <span class="micro-label">Heritage</span>
+    <h1>Cultural Traditions</h1>
+    <p class="page-intro">
+      Morocco's cultural landscape spans ancestral traditions indigenous to the region, 
+      contemporary forms that blend influences, and international genres present through festivals.
+    </p>
+  </div>
+
+  <!-- Rooted Traditions -->
+  {rootedTraditions.length > 0 && (
+    <section class="tradition-section">
+      <header class="section-header">
+        <div class="section-header__text">
+          <span class="micro-label">Indigenous</span>
+          <h2>Rooted Traditions</h2>
+          <p class="section-desc">
+            Ancestral, pre-colonial cultural forms with multi-generational continuity.
+          </p>
+        </div>
+        <span class="section-count">{rootedTraditions.length}</span>
+      </header>
+
+      <div class="traditions-grid">
+        {rootedTraditions.map((tradition, i) => (
+          <a href={`/traditions/${tradition.id}`} class="tradition-card" data-sacred={tradition.sacred}>
+            <div class="tradition-card__number">{String(i + 1).padStart(2, '0')}</div>
+            <div class="tradition-card__content">
+              <h3>{tradition.name}</h3>
+              {tradition.name_ar && <span class="tradition-card__ar">{tradition.name_ar}</span>}
+              {tradition.sacred && <span class="sacred-indicator">Sacred</span>}
+            </div>
+            <div class="tradition-card__meta">
+              <span class="event-count">{tradition.count} events</span>
+              <span class="arrow">→</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Hybrid Traditions -->
+  {hybridTraditions.length > 0 && (
+    <section class="tradition-section">
+      <header class="section-header">
+        <div class="section-header__text">
+          <span class="micro-label">Contemporary</span>
+          <h2>Hybrid Forms</h2>
+          <p class="section-desc">
+            Post-independence developments blending traditional elements with modern influences.
+          </p>
+        </div>
+        <span class="section-count">{hybridTraditions.length}</span>
+      </header>
+
+      <div class="traditions-grid traditions-grid--compact">
+        {hybridTraditions.map((tradition) => (
+          <a href={`/traditions/${tradition.id}`} class="tradition-card tradition-card--hybrid">
+            <div class="tradition-card__content">
+              <h3>{tradition.name}</h3>
+            </div>
+            <div class="tradition-card__meta">
+              <span class="event-count">{tradition.count} events</span>
+              <span class="arrow">→</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- International -->
+  {importedTraditions.length > 0 && (
+    <section class="tradition-section">
+      <header class="section-header">
+        <div class="section-header__text">
+          <span class="micro-label">Global</span>
+          <h2>International</h2>
+          <p class="section-desc">
+            International forms present in Morocco through festivals and events.
+          </p>
+        </div>
+        <span class="section-count">{importedTraditions.length}</span>
+      </header>
+
+      <div class="traditions-list">
+        {importedTraditions.map((tradition) => (
+          <a href={`/traditions/${tradition.id}`} class="tradition-list-item">
+            <h3>{tradition.name}</h3>
+            <span class="event-count">{tradition.count} events</span>
+            <span class="arrow">→</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  .page-header {
+    padding: var(--space-xl) 0 var(--space-lg);
+    border-bottom: 1px solid var(--stone);
+    margin-bottom: var(--space-xl);
+  }
+
+  .page-header .micro-label {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-header h1 {
+    margin-bottom: var(--space-sm);
+  }
+
+  .page-intro {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--charcoal-soft);
+    max-width: 640px;
+  }
+
+  /* Sections */
+  .tradition-section {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--stone);
+  }
+
+  .section-header__text .micro-label {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-header__text h2 {
+    margin-bottom: 0.5rem;
+  }
+
+  .section-desc {
+    font-size: 0.875rem;
+    color: var(--warm-gray);
+    max-width: 480px;
+  }
+
+  .section-count {
+    font-family: var(--font-serif);
+    font-size: 3rem;
+    color: var(--stone-dark);
+    line-height: 1;
+  }
+
+  /* Traditions Grid */
+  .traditions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--stone);
+    border: 1px solid var(--stone);
+  }
+
+  .traditions-grid--compact {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .tradition-card {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-md);
+    background: var(--paper);
+    min-height: 180px;
+    transition: all var(--duration) var(--ease-out);
+  }
+
+  .tradition-card:hover {
+    background: var(--ink);
+  }
+
+  .tradition-card__number {
+    font-family: var(--font-serif);
+    font-size: 0.875rem;
+    color: var(--sand);
+    margin-bottom: auto;
+    transition: color var(--duration) var(--ease-out);
+  }
+
+  .tradition-card:hover .tradition-card__number {
+    color: rgba(250, 249, 247, 0.3);
+  }
+
+  .tradition-card__content {
+    margin-bottom: var(--space-sm);
+  }
+
+  .tradition-card__content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+    transition: color var(--duration) var(--ease-out);
+  }
+
+  .tradition-card:hover .tradition-card__content h3 {
+    color: var(--paper);
+  }
+
+  .tradition-card__ar {
+    font-size: 1rem;
+    color: var(--warm-gray);
+    display: block;
+    margin-bottom: 0.5rem;
+    transition: color var(--duration) var(--ease-out);
+  }
+
+  .tradition-card:hover .tradition-card__ar {
+    color: rgba(250, 249, 247, 0.5);
+  }
+
+  .sacred-indicator {
+    display: inline-block;
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--terracotta);
+    padding: 0.25rem 0.5rem;
+    border: 1px solid var(--terracotta);
+    transition: all var(--duration) var(--ease-out);
+  }
+
+  .tradition-card:hover .sacred-indicator {
+    color: var(--paper);
+    border-color: rgba(250, 249, 247, 0.3);
+  }
+
+  .tradition-card__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .event-count {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--warm-gray);
+    transition: color var(--duration) var(--ease-out);
+  }
+
+  .tradition-card:hover .event-count {
+    color: rgba(250, 249, 247, 0.5);
+  }
+
+  .arrow {
+    font-size: 1rem;
+    color: var(--sand);
+    transition: transform var(--duration) var(--ease-out), color var(--duration) var(--ease-out);
+  }
+
+  .tradition-card:hover .arrow {
+    transform: translateX(4px);
+    color: var(--paper);
+  }
+
+  /* Hybrid cards */
+  .tradition-card--hybrid {
+    min-height: 140px;
+  }
+
+  .tradition-card--hybrid .tradition-card__content h3 {
+    font-size: 1.25rem;
+  }
+
+  /* Traditions List */
+  .traditions-list {
+    border-top: 1px solid var(--stone);
+  }
+
+  .tradition-list-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid var(--stone);
+    transition: all var(--duration) var(--ease-out);
+  }
+
+  .tradition-list-item:hover {
+    padding-left: var(--space-sm);
+    background: var(--paper-warm);
+    margin: 0 calc(-1 * var(--space-sm));
+    padding-right: var(--space-sm);
+  }
+
+  .tradition-list-item h3 {
+    font-size: 1.25rem;
+    flex: 1;
+    transition: color var(--duration) var(--ease-out);
+  }
+
+  .tradition-list-item:hover h3 {
+    color: var(--ink);
+  }
+
+  .tradition-list-item .event-count {
+    color: var(--warm-gray);
+  }
+
+  .tradition-list-item .arrow {
+    color: var(--sand);
+  }
+
+  .tradition-list-item:hover .arrow {
+    transform: translateX(4px);
+    color: var(--ink);
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .traditions-grid--compact {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .section-header {
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .section-count {
+      font-size: 2rem;
+    }
+
+    .traditions-grid,
+    .traditions-grid--compact {
+      grid-template-columns: 1fr;
+    }
+
+    .tradition-card {
+      min-height: 140px;
+    }
+  }
+</style>

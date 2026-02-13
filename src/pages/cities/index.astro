@@ -1,0 +1,221 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCities } from '../../lib/api';
+
+const cities = getCities();
+
+// Group cities by region
+const cityRegions = cities.reduce((acc, city) => {
+  const region = city.region || 'Other';
+  if (!acc[region]) acc[region] = [];
+  acc[region].push(city);
+  return acc;
+}, {} as Record<string, typeof cities>);
+
+const regions = Object.keys(cityRegions).sort();
+---
+
+<Base title="Cities — Festivals in Morocco">
+  <div class="page-header">
+    <span class="micro-label">Locations</span>
+    <h1>Cities</h1>
+    <p class="page-intro">
+      Explore cultural events and festivals by location across Morocco.
+    </p>
+  </div>
+
+  <!-- All Cities Grid -->
+  <section class="cities-section">
+    <div class="cities-grid">
+      {cities.map((city, i) => (
+        <a href={`/cities/${city.slug}`} class="city-card">
+          <div class="city-card__number">{String(i + 1).padStart(2, '0')}</div>
+          <div class="city-card__content">
+            <h2>{city.name}</h2>
+            {city.name_ar && <span class="city-card__ar">{city.name_ar}</span>}
+          </div>
+          <div class="city-card__meta">
+            <span class="event-count">{city.count} events</span>
+            <span class="arrow">→</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Map CTA -->
+  <section class="map-section">
+    <div class="map-cta">
+      <div class="map-cta__content">
+        <span class="micro-label">Geographic</span>
+        <h2>View on Map</h2>
+        <p>See all festivals and events across Morocco on an interactive map.</p>
+        <a href="/map" class="btn">Open Map</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .page-header {
+    padding: var(--space-xl) 0 var(--space-lg);
+    border-bottom: 1px solid var(--stone);
+    margin-bottom: var(--space-xl);
+  }
+
+  .page-header .micro-label {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-header h1 {
+    margin-bottom: var(--space-sm);
+  }
+
+  .page-intro {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--charcoal-soft);
+  }
+
+  /* Cities Grid */
+  .cities-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--stone);
+    border: 1px solid var(--stone);
+  }
+
+  .city-card {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-lg) var(--space-md);
+    background: var(--paper);
+    min-height: 200px;
+    transition: all var(--duration) var(--ease-out);
+  }
+
+  .city-card:hover {
+    background: var(--ink);
+  }
+
+  .city-card__number {
+    font-family: var(--font-serif);
+    font-size: 0.875rem;
+    color: var(--sand);
+    margin-bottom: auto;
+    transition: color var(--duration) var(--ease-out);
+  }
+
+  .city-card:hover .city-card__number {
+    color: rgba(250, 249, 247, 0.3);
+  }
+
+  .city-card__content {
+    margin-bottom: var(--space-sm);
+  }
+
+  .city-card__content h2 {
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
+    transition: color var(--duration) var(--ease-out);
+  }
+
+  .city-card:hover .city-card__content h2 {
+    color: var(--paper);
+  }
+
+  .city-card__ar {
+    font-size: 1.125rem;
+    color: var(--warm-gray);
+    display: block;
+    transition: color var(--duration) var(--ease-out);
+  }
+
+  .city-card:hover .city-card__ar {
+    color: rgba(250, 249, 247, 0.5);
+  }
+
+  .city-card__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .event-count {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--warm-gray);
+    transition: color var(--duration) var(--ease-out);
+  }
+
+  .city-card:hover .event-count {
+    color: rgba(250, 249, 247, 0.5);
+  }
+
+  .arrow {
+    font-size: 1.25rem;
+    color: var(--sand);
+    transition: transform var(--duration) var(--ease-out), color var(--duration) var(--ease-out);
+  }
+
+  .city-card:hover .arrow {
+    transform: translateX(4px);
+    color: var(--paper);
+  }
+
+  /* Map Section */
+  .map-section {
+    margin-top: var(--space-xl);
+  }
+
+  .map-cta {
+    padding: var(--space-xl);
+    background: var(--paper-warm);
+    border: 1px solid var(--stone);
+    text-align: center;
+  }
+
+  .map-cta__content {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .map-cta .micro-label {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .map-cta h2 {
+    margin-bottom: var(--space-sm);
+  }
+
+  .map-cta p {
+    margin: 0 auto var(--space-md);
+    color: var(--charcoal-soft);
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .cities-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .cities-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .city-card {
+      min-height: 160px;
+      padding: var(--space-md);
+    }
+
+    .city-card__content h2 {
+      font-size: 1.5rem;
+    }
+  }
+</style>

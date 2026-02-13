@@ -1,0 +1,786 @@
+---
+import { getLegalPages, getSiteSettings, type SiteSettings } from '../lib/supabase';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  settings?: SiteSettings;
+}
+
+const { title, description = "Discover festivals and cultural events in Morocco", image, settings: passedSettings } = Astro.props;
+const currentPath = Astro.url.pathname;
+
+const settings = passedSettings || await getSiteSettings();
+
+// Normalize canonical path — strip trailing slash except for root
+let canonicalPath = currentPath;
+if (canonicalPath !== '/' && canonicalPath.endsWith('/')) {
+  canonicalPath = canonicalPath.slice(0, -1);
+}
+const canonicalUrl = `https://festivalsinmorocco.com${canonicalPath}`;
+
+let legalPages = [];
+try {
+  legalPages = await getLegalPages();
+} catch (e) {
+  legalPages = [
+    { label: "Privacy", href: "/privacy" },
+    { label: "Terms", href: "/terms" },
+    { label: "Disclaimer", href: "/disclaimer" }
+  ];
+}
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>{title}</title>
+  <meta name="title" content={title}>
+  <meta name="description" content={description}>
+  <meta name="author" content="Slow Morocco">
+  <meta name="robots" content="index, follow">
+  
+  <link rel="canonical" href={canonicalUrl}>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  
+  <meta property="og:type" content="website">
+  <meta property="og:url" content={canonicalUrl}>
+  <meta property="og:title" content={title}>
+  <meta property="og:description" content={description}>
+  <meta property="og:image" content={image || "https://festivalsinmorocco.com/og-image.jpg"}>
+  <meta property="og:site_name" content="Festivals in Morocco">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content={title}>
+  <meta name="twitter:description" content={description}>
+  
+  <!-- GEO: AI Citation Tags -->
+  <meta name="citation_title" content={title}>
+  <meta name="citation_author" content="Festivals in Morocco">
+  <meta name="citation_publisher" content="Slow Morocco">
+  <meta name="DC.title" content={title}>
+  <meta name="DC.creator" content="Festivals in Morocco">
+  <meta name="DC.publisher" content="Slow Morocco">
+  <meta name="ai-content-declaration" content="human-curated">
+  
+  <!-- Typography: Cormorant Garamond (elegant serif) + Inter (clean sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Festivals in Morocco",
+    "url": "https://festivalsinmorocco.com",
+    "description": "Cultural events and festivals in Morocco",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Slow Morocco",
+      "url": "https://slowmorocco.com"
+    }
+  })} />
+  
+  <style is:global>
+    /* ═══════════════════════════════════════════════════════════════════════════
+       EDITORIAL MINIMALIST DESIGN SYSTEM
+       Inspired by: Kinfolk, Cereal, SSENSE, Aesop, Fondazione Prada, Gagosian
+       
+       Philosophy: The design recedes so the content can speak.
+       Like a gallery with white walls, concrete floors, and perfect lighting.
+    ═══════════════════════════════════════════════════════════════════════════ */
+
+    :root {
+      /* WARM NEUTRALS - No stark black/white */
+      --paper: #FAF9F7;
+      --paper-warm: #F5F3EF;
+      --stone: #E8E4DE;
+      --stone-dark: #D4CFC6;
+      --sand: #C4BEB4;
+      --warm-gray: #8A857D;
+      --charcoal: #3A3835;
+      --charcoal-soft: #4A4744;
+      --ink: #1A1917;
+      
+      /* Accent - muted terracotta */
+      --terracotta: #B8705B;
+      --terracotta-dark: #9A5A48;
+      
+      /* Typography */
+      --font-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      
+      /* Spacing - generous breathing room */
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 2rem;
+      --space-lg: 4rem;
+      --space-xl: 6rem;
+      --space-2xl: 10rem;
+      
+      /* Transitions - subtle, unhurried */
+      --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
+      --duration: 0.5s;
+      --duration-fast: 0.3s;
+      
+      /* Layout */
+      --max-width: 1440px;
+      --reading-width: 720px;
+      --content-width: 1200px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      font-weight: 400;
+      font-size: 0.9375rem;
+      line-height: 1.7;
+      color: var(--charcoal);
+      background: var(--paper);
+      min-height: 100vh;
+    }
+
+    /* Subtle noise texture overlay - gallery paper texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.02;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       TYPOGRAPHY
+    ═══════════════════════════════════════════════════════════════════════════ */
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      line-height: 1.15;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+
+    h1 { 
+      font-size: clamp(2.75rem, 7vw, 5rem); 
+      line-height: 1.05;
+    }
+    
+    h2 { 
+      font-size: clamp(2rem, 4vw, 3rem); 
+    }
+    
+    h3 { 
+      font-size: clamp(1.5rem, 2.5vw, 2rem); 
+    }
+    
+    h4 { 
+      font-size: 1.25rem; 
+    }
+
+    p {
+      color: var(--charcoal-soft);
+      max-width: var(--reading-width);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: color var(--duration-fast) var(--ease-out),
+                  opacity var(--duration-fast) var(--ease-out);
+    }
+
+    /* MICRO-LABELS - uppercase, wide letter-spacing (signature element) */
+    .micro-label {
+      font-family: var(--font-sans);
+      font-size: 0.6875rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--warm-gray);
+    }
+
+    /* Large display text */
+    .display-text {
+      font-family: var(--font-serif);
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       LAYOUT
+    ═══════════════════════════════════════════════════════════════════════════ */
+    
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--space-md);
+    }
+
+    .container--narrow {
+      max-width: var(--content-width);
+    }
+
+    .section {
+      padding: var(--space-xl) 0;
+    }
+
+    .section--large {
+      padding: var(--space-2xl) 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       BUTTONS & LINKS
+    ═══════════════════════════════════════════════════════════════════════════ */
+    
+    .view-all {
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--warm-gray);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid transparent;
+      transition: all var(--duration) var(--ease-out);
+    }
+
+    .view-all::after {
+      content: '→';
+      transition: transform var(--duration) var(--ease-out);
+    }
+
+    .view-all:hover {
+      color: var(--ink);
+      border-bottom-color: var(--ink);
+    }
+
+    .view-all:hover::after {
+      transform: translateX(4px);
+    }
+
+    /* Button - minimal, inverts on hover */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 1rem 2rem;
+      border: 1px solid var(--charcoal);
+      background: transparent;
+      color: var(--charcoal);
+      cursor: pointer;
+      transition: all var(--duration) var(--ease-out);
+    }
+
+    .btn:hover {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--paper);
+    }
+
+    .btn--filled {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .btn--filled:hover {
+      background: var(--charcoal-soft);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       SELECTION & FOCUS
+    ═══════════════════════════════════════════════════════════════════════════ */
+    
+    ::selection {
+      background: var(--terracotta);
+      color: var(--paper);
+    }
+
+    :focus-visible {
+      outline: 1px solid var(--ink);
+      outline-offset: 3px;
+    }
+
+    /* Scrollbar - minimal */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--stone);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--sand);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--warm-gray);
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+  </style>
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════════════
+       HEADER - Understated, transparent over hero
+    ═══════════════════════════════════════════════════════════════════════════ */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: var(--space-md) 0;
+      transition: background var(--duration) var(--ease-out), 
+                  backdrop-filter var(--duration) var(--ease-out);
+    }
+
+    header.scrolled {
+      background: rgba(250, 249, 247, 0.92);
+      backdrop-filter: blur(20px);
+    }
+
+    header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: var(--font-serif);
+      font-size: 1.125rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--ink);
+      transition: opacity var(--duration) var(--ease-out);
+    }
+
+    .logo:hover {
+      opacity: 0.6;
+    }
+
+    /* Header over hero - light text */
+    header:not(.scrolled) .logo,
+    header:not(.scrolled) nav a {
+      color: var(--paper);
+    }
+
+    header:not(.scrolled) .menu-toggle span {
+      background: var(--paper);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: var(--space-lg);
+    }
+
+    nav a {
+      font-family: var(--font-sans);
+      font-size: 0.6875rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--charcoal);
+      position: relative;
+      padding: 0.375rem 0;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: currentColor;
+      transition: width var(--duration) var(--ease-out);
+    }
+
+    nav a:hover::after,
+    nav a.active::after {
+      width: 100%;
+    }
+
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      padding: 0.5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 201;
+    }
+
+    .menu-toggle span {
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--ink);
+      transition: all 0.3s var(--ease-out);
+    }
+
+    .menu-overlay {
+      display: none;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       MAIN
+    ═══════════════════════════════════════════════════════════════════════════ */
+    main {
+      min-height: 100vh;
+    }
+
+    main.with-padding {
+      padding-top: calc(var(--space-xl) + 80px);
+      padding-bottom: var(--space-xl);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       FOOTER - Ombre effect (quiet luxury)
+    ═══════════════════════════════════════════════════════════════════════════ */
+    footer {
+      margin-top: var(--space-2xl);
+    }
+
+    .footer-authority {
+      background: var(--stone);
+      padding: var(--space-lg) 0;
+    }
+
+    .authority-statement {
+      font-size: 0.875rem;
+      line-height: 1.9;
+      color: var(--charcoal-soft);
+      max-width: var(--reading-width);
+    }
+
+    .authority-statement strong {
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    .footer-nav {
+      background: #2A2825;
+      padding: var(--space-lg) 0;
+    }
+
+    .footer-nav .container {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-lg);
+      flex-wrap: wrap;
+    }
+
+    .footer-nav a {
+      font-size: 0.6875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: rgba(250, 249, 247, 0.4);
+      transition: color var(--duration) var(--ease-out);
+    }
+
+    .footer-nav a:hover {
+      color: rgba(250, 249, 247, 0.9);
+    }
+
+    .footer-legal {
+      background: #1F1E1C;
+      padding: var(--space-md) 0;
+    }
+
+    .footer-legal .container {
+      text-align: center;
+    }
+
+    .legal-links {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-sm);
+    }
+
+    .legal-links a {
+      font-size: 0.625rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(250, 249, 247, 0.25);
+      transition: color var(--duration) var(--ease-out);
+    }
+
+    .legal-links a:hover {
+      color: rgba(250, 249, 247, 0.5);
+    }
+
+    .footer-bottom {
+      font-size: 0.625rem;
+      letter-spacing: 0.05em;
+      color: rgba(250, 249, 247, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .footer-bottom a {
+      color: rgba(250, 249, 247, 0.35);
+    }
+
+    .footer-bottom a:hover {
+      color: rgba(250, 249, 247, 0.6);
+    }
+
+    .footer-powered {
+      background: #131311;
+      padding: var(--space-sm) 0;
+      text-align: center;
+    }
+
+    .footer-powered a {
+      font-size: 0.5625rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: rgba(250, 249, 247, 0.15);
+      transition: color var(--duration) var(--ease-out);
+    }
+
+    .footer-powered a:hover {
+      color: rgba(250, 249, 247, 0.4);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      :root {
+        --space-lg: 3rem;
+        --space-xl: 4rem;
+        --space-2xl: 6rem;
+      }
+
+      .container {
+        padding: 0 var(--space-sm);
+      }
+
+      .menu-toggle {
+        display: flex;
+      }
+
+      nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100vh;
+        background: var(--paper);
+        flex-direction: column;
+        justify-content: center;
+        gap: var(--space-md);
+        transition: right 0.5s var(--ease-out);
+        z-index: 200;
+      }
+
+      nav.open {
+        right: 0;
+      }
+
+      nav a {
+        font-size: 1.25rem;
+        text-transform: none;
+        letter-spacing: 0.02em;
+        font-family: var(--font-serif);
+        color: var(--ink);
+      }
+
+      .menu-toggle.open span {
+        background: var(--ink);
+      }
+
+      .menu-toggle.open span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+      }
+
+      .menu-toggle.open span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .menu-toggle.open span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -5px);
+      }
+
+      .menu-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(26, 25, 23, 0.3);
+        z-index: 199;
+      }
+
+      .menu-overlay.open {
+        display: block;
+      }
+
+      .footer-nav .container {
+        gap: var(--space-sm) var(--space-md);
+      }
+
+      main.with-padding {
+        padding-top: calc(var(--space-lg) + 60px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="/" class="logo">Festivals in Morocco</a>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav id="nav">
+        <a href="/events" class:list={[{ active: currentPath.startsWith('/events') }]}>Events</a>
+        <a href="/traditions" class:list={[{ active: currentPath.startsWith('/traditions') }]}>Traditions</a>
+        <a href="/cities" class:list={[{ active: currentPath.startsWith('/cities') }]}>Cities</a>
+        <a href="/map" class:list={[{ active: currentPath === '/map' }]}>Map</a>
+      </nav>
+      <div class="menu-overlay" id="menu-overlay"></div>
+    </div>
+  </header>
+
+  <main class:list={[{ 'with-padding': !Astro.slots.has('hero') }]}>
+    <slot name="hero" />
+    <div class="container container--narrow">
+      <slot />
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-authority">
+      <div class="container">
+        <p class="authority-statement">
+          <strong>Festivals in Morocco</strong> is an independent cultural reference documenting festivals, seasonal events, and contemporary cultural gatherings across Morocco. The platform focuses on accuracy, cultural context, and authentic representation of Moroccan heritage.
+        </p>
+      </div>
+    </div>
+    <div class="footer-nav">
+      <div class="container">
+        <a href="/events">Events</a>
+        <a href="/traditions">Traditions</a>
+        <a href="/cities">Cities</a>
+        <a href="/map">Map</a>
+        <a href="/submit">Submit</a>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <div class="container">
+        <div class="legal-links">
+          {legalPages.map(page => (
+            <a href={page.href}>{page.label}</a>
+          ))}
+        </div>
+        <div class="footer-bottom">
+          <span>© {new Date().getFullYear()} Slow Morocco</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-powered">
+      <div class="container">
+        <a href="https://www.slowmorocco.com/" target="_blank" rel="noopener">Powered by Slow Morocco</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Header scroll effect
+    const header = document.querySelector('header');
+    const hero = document.querySelector('.hero') || document.querySelector('.page-hero');
+    
+    function updateHeader() {
+      if (!header) return;
+      
+      if (!hero) {
+        header.classList.add('scrolled');
+        return;
+      }
+      
+      const scrollY = window.scrollY;
+      const threshold = Math.max(hero.offsetHeight - 100, 50);
+      
+      if (scrollY > threshold) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    }
+    
+    window.addEventListener('scroll', updateHeader, { passive: true });
+    updateHeader();
+
+    // Mobile menu
+    const menuToggle = document.getElementById('menu-toggle');
+    const nav = document.getElementById('nav');
+    const menuOverlay = document.getElementById('menu-overlay');
+
+    function toggleMenu() {
+      menuToggle?.classList.toggle('open');
+      nav?.classList.toggle('open');
+      menuOverlay?.classList.toggle('open');
+      document.body.style.overflow = nav?.classList.contains('open') ? 'hidden' : '';
+    }
+
+    menuToggle?.addEventListener('click', toggleMenu);
+    menuOverlay?.addEventListener('click', toggleMenu);
+
+    nav?.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        if (nav.classList.contains('open')) {
+          toggleMenu();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
