@@ -1,22 +1,11 @@
 /**
- * Data Client — Supabase
+ * Data Client — Hard-coded
  *
- * Fetches event data from Supabase (festivals table).
+ * Reads event data from hard-coded festivals data.
  * Used by Vercel serverless API routes (/api/*).
  */
 
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-
-let _supabase: SupabaseClient | null = null;
-
-function getSupabase(): SupabaseClient {
-  if (!_supabase) {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-    _supabase = createClient(url, key);
-  }
-  return _supabase;
-}
+import { festivals as _rawFestivals } from "../lib/data/festivals";
 
 // ============================================================================
 // TYPES
@@ -99,15 +88,7 @@ function categoryToEventType(category: string): string {
 }
 
 // ============================================================================
-// IN-MEMORY CACHE (persists during serverless warm period)
-// ============================================================================
-
-let _cachedEvents: SheetEvent[] | null = null;
-let _cacheTimestamp = 0;
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-
-// ============================================================================
-// MAIN FETCH
+// MAIN FETCH (now reads from hard-coded data)
 // ============================================================================
 
 function rowToEvent(row: any): SheetEvent {
@@ -164,30 +145,7 @@ function rowToEvent(row: any): SheetEvent {
 }
 
 export async function fetchEvents(): Promise<SheetEvent[]> {
-  if (_cachedEvents && Date.now() - _cacheTimestamp < CACHE_TTL) {
-    return _cachedEvents;
-  }
-
-  try {
-    const { data, error } = await getSupabase()
-      .from("festivals")
-      .select("*")
-      .eq("status", "published")
-      .order("start_date", { ascending: true });
-
-    if (error) throw error;
-
-    const events = (data || []).map(rowToEvent);
-    console.log(`[Festivals API] Loaded ${events.length} events from Supabase`);
-
-    _cachedEvents = events;
-    _cacheTimestamp = Date.now();
-    return events;
-  } catch (error) {
-    console.error("[Festivals API] Failed to fetch from Supabase:", error);
-    if (_cachedEvents) return _cachedEvents;
-    return [];
-  }
+  return (_rawFestivals as any[]).map(rowToEvent);
 }
 
 export async function fetchCities(): Promise<

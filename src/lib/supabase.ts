@@ -1,36 +1,13 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 // =============================================================================
-// SUPABASE CLIENT — Site-specific (lazy-initialized)
+// HARD-CODED DATA (no longer fetched from Supabase)
 // =============================================================================
-
-let _supabase: SupabaseClient | null = null;
-
-function getSupabase(): SupabaseClient {
-  if (!_supabase) {
-    const url =
-      import.meta.env.NEXT_PUBLIC_SUPABASE_URL ||
-      import.meta.env.PUBLIC_SUPABASE_URL ||
-      process.env.NEXT_PUBLIC_SUPABASE_URL ||
-      "";
-
-    const key =
-      import.meta.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-      import.meta.env.PUBLIC_SUPABASE_ANON_KEY ||
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-      "";
-
-    if (!url || !key) {
-      throw new Error("Supabase URL and anon key are required. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.");
-    }
-
-    _supabase = createClient(url, key);
-  }
-  return _supabase;
-}
+import { festivals as _rawFestivals } from "./data/festivals";
+import { siteSettingsData as _rawSettings } from "./data/settings";
 
 // =============================================================================
-// NEXUS SUPABASE CLIENT — Shared across all brands
+// NEXUS SUPABASE CLIENT — Shared across all brands (STILL LIVE)
 // =============================================================================
 
 let _nexus: SupabaseClient | null = null;
@@ -59,31 +36,7 @@ function getNexus(): SupabaseClient {
 const SITE_ID = "festivals-morocco";
 
 // =============================================================================
-// BUILD-TIME CACHE
-// =============================================================================
-declare global {
-  // eslint-disable-next-line no-var
-  var __festivalsCache:
-    | {
-        siteSettings: SiteSettings | null;
-        events: SheetEvent[] | null;
-        legalPages: LegalPage[] | null;
-      }
-    | undefined;
-}
-
-if (!globalThis.__festivalsCache) {
-  globalThis.__festivalsCache = {
-    siteSettings: null,
-    events: null,
-    legalPages: null,
-  };
-}
-
-const cache = globalThis.__festivalsCache!;
-
-// =============================================================================
-// LEGAL PAGES (from Nexus Supabase)
+// LEGAL PAGES (from Nexus Supabase — UNCHANGED)
 // =============================================================================
 
 export interface LegalPage {
@@ -91,9 +44,11 @@ export interface LegalPage {
   href: string;
 }
 
+let _legalPagesCache: LegalPage[] | null = null;
+
 export async function getLegalPages(): Promise<LegalPage[]> {
-  if (cache.legalPages !== null) {
-    return cache.legalPages;
+  if (_legalPagesCache !== null) {
+    return _legalPagesCache;
   }
 
   try {
@@ -104,8 +59,8 @@ export async function getLegalPages(): Promise<LegalPage[]> {
 
     if (error || !data) {
       console.error("[Nexus] Legal pages error:", error?.message);
-      cache.legalPages = getFallbackLegalPages();
-      return cache.legalPages;
+      _legalPagesCache = getFallbackLegalPages();
+      return _legalPagesCache;
     }
 
     const uniquePages = new Map<string, string>();
@@ -130,12 +85,12 @@ export async function getLegalPages(): Promise<LegalPage[]> {
       }
     }
 
-    cache.legalPages = result.length > 0 ? result : getFallbackLegalPages();
-    return cache.legalPages;
+    _legalPagesCache = result.length > 0 ? result : getFallbackLegalPages();
+    return _legalPagesCache;
   } catch (error) {
     console.error("Could not fetch legal pages from Nexus:", error);
-    cache.legalPages = getFallbackLegalPages();
-    return cache.legalPages;
+    _legalPagesCache = getFallbackLegalPages();
+    return _legalPagesCache;
   }
 }
 
@@ -228,7 +183,7 @@ export async function getLegalPageContent(
 }
 
 // =============================================================================
-// SITE SETTINGS — from Supabase
+// SITE SETTINGS — now hard-coded
 // =============================================================================
 
 export interface SiteSettings {
@@ -258,58 +213,28 @@ const DEFAULT_SETTINGS: SiteSettings = {
 };
 
 export async function getSiteSettings(): Promise<SiteSettings> {
-  if (cache.siteSettings !== null) {
-    return cache.siteSettings;
-  }
+  const settings = _rawSettings;
 
-  try {
-    const { data, error } = await getSupabase()
-      .from("site_settings")
-      .select("key, value");
-
-    if (error) throw error;
-    if (!data || data.length === 0) {
-      cache.siteSettings = DEFAULT_SETTINGS;
-      return DEFAULT_SETTINGS;
-    }
-
-    const settings: Record<string, string> = {};
-    for (const row of data) {
-      settings[row.key] = row.value;
-    }
-
-    console.log(
-      "[Festivals] Loaded",
-      Object.keys(settings).length,
-      "site settings from Supabase"
-    );
-
-    cache.siteSettings = {
-      hero_image: settings.hero_image || DEFAULT_SETTINGS.hero_image,
-      hero_title: settings.hero_title || DEFAULT_SETTINGS.hero_title,
-      hero_subtitle: settings.hero_subtitle || DEFAULT_SETTINGS.hero_subtitle,
-      hero_label: settings.hero_label || DEFAULT_SETTINGS.hero_label,
-      newsletter_title:
-        settings.newsletter_title || DEFAULT_SETTINGS.newsletter_title,
-      newsletter_description:
-        settings.newsletter_description ||
-        DEFAULT_SETTINGS.newsletter_description,
-      newsletter_background_image:
-        settings.newsletter_background_image ||
-        DEFAULT_SETTINGS.newsletter_background_image,
-      site_name: settings.site_name || DEFAULT_SETTINGS.site_name,
-      site_tagline: settings.site_tagline || DEFAULT_SETTINGS.site_tagline,
-    };
-    return cache.siteSettings;
-  } catch (error) {
-    console.error("Error fetching site settings from Supabase:", error);
-    cache.siteSettings = DEFAULT_SETTINGS;
-    return DEFAULT_SETTINGS;
-  }
+  return {
+    hero_image: settings.hero_image || DEFAULT_SETTINGS.hero_image,
+    hero_title: settings.hero_title || DEFAULT_SETTINGS.hero_title,
+    hero_subtitle: settings.hero_subtitle || DEFAULT_SETTINGS.hero_subtitle,
+    hero_label: settings.hero_label || DEFAULT_SETTINGS.hero_label,
+    newsletter_title:
+      settings.newsletter_title || DEFAULT_SETTINGS.newsletter_title,
+    newsletter_description:
+      settings.newsletter_description ||
+      DEFAULT_SETTINGS.newsletter_description,
+    newsletter_background_image:
+      settings.newsletter_background_image ||
+      DEFAULT_SETTINGS.newsletter_background_image,
+    site_name: settings.site_name || DEFAULT_SETTINGS.site_name,
+    site_tagline: settings.site_tagline || DEFAULT_SETTINGS.site_tagline,
+  };
 }
 
 // =============================================================================
-// EVENTS — from Supabase
+// EVENTS — now hard-coded
 // =============================================================================
 
 export interface SheetEvent {
@@ -347,70 +272,41 @@ export interface SheetEvent {
 }
 
 export async function getSheetEvents(): Promise<SheetEvent[]> {
-  if (cache.events !== null) {
-    return cache.events;
-  }
+  const events: SheetEvent[] = (_rawFestivals as any[]).map((row: any) => ({
+    id: row.id,
+    slug: row.id,
+    title_en: row.title_en || row.id,
+    title_fr: row.title_fr || "",
+    title_es: row.title_es || "",
+    title_ar: row.title_ar || "",
+    description_en: row.description_en || "",
+    description_fr: row.description_fr || "",
+    description_es: row.description_es || "",
+    description_ar: row.description_ar || "",
+    category: row.category || "festival",
+    region: row.region || "",
+    city: row.city || "",
+    venue: row.venue || "",
+    startDate: row.start_date || "",
+    endDate: row.end_date || row.start_date || "",
+    price_min: parseFloat(row.price_min) || 0,
+    price_max: parseFloat(row.price_max) || 0,
+    price_isFree: row.price_is_free || false,
+    image: row.image || "",
+    tags: row.tags ? row.tags.split(",").map((t: string) => t.trim()) : [],
+    lat: parseFloat(row.lat) || 0,
+    lng: parseFloat(row.lng) || 0,
+    organizer: row.organizer || "",
+    website: row.website || "",
+    email: row.email || "",
+    phone: row.phone || "",
+    wheelchairAccess: row.wheelchair_access || false,
+    signLanguage: row.sign_language || false,
+    audioDescription: row.audio_description || false,
+    status: row.status || "published",
+  }));
 
-  try {
-    const { data, error } = await getSupabase()
-      .from("festivals")
-      .select("*")
-      .eq("status", "published")
-      .order("start_date", { ascending: true });
-
-    if (error) throw error;
-    if (!data || data.length === 0) {
-      cache.events = [];
-      return [];
-    }
-
-    const events: SheetEvent[] = data.map((row: any) => ({
-      id: row.id,
-      slug: row.id,
-      title_en: row.title_en || row.id,
-      title_fr: row.title_fr || "",
-      title_es: row.title_es || "",
-      title_ar: row.title_ar || "",
-      description_en: row.description_en || "",
-      description_fr: row.description_fr || "",
-      description_es: row.description_es || "",
-      description_ar: row.description_ar || "",
-      category: row.category || "festival",
-      region: row.region || "",
-      city: row.city || "",
-      venue: row.venue || "",
-      startDate: row.start_date || "",
-      endDate: row.end_date || row.start_date || "",
-      price_min: parseFloat(row.price_min) || 0,
-      price_max: parseFloat(row.price_max) || 0,
-      price_isFree: row.price_is_free || false,
-      image: row.image || "",
-      tags: row.tags ? row.tags.split(",").map((t: string) => t.trim()) : [],
-      lat: parseFloat(row.lat) || 0,
-      lng: parseFloat(row.lng) || 0,
-      organizer: row.organizer || "",
-      website: row.website || "",
-      email: row.email || "",
-      phone: row.phone || "",
-      wheelchairAccess: row.wheelchair_access || false,
-      signLanguage: row.sign_language || false,
-      audioDescription: row.audio_description || false,
-      status: row.status || "published",
-    }));
-
-    console.log(
-      "[Festivals] Loaded",
-      events.length,
-      "events from Supabase"
-    );
-
-    cache.events = events;
-    return events;
-  } catch (error) {
-    console.error("Error fetching events from Supabase:", error);
-    cache.events = [];
-    return [];
-  }
+  return events;
 }
 
 // Legacy compatibility — getSheetData for any generic table
@@ -422,7 +318,6 @@ export async function getSheetData(tabName: string): Promise<any[]> {
     const settings = await getSiteSettings();
     return Object.entries(settings).map(([key, value]) => ({ key, value }));
   }
-  // Fallback — shouldn't be called for migrated tables
   console.warn(`[Festivals] getSheetData called for unmigrated tab: ${tabName}`);
   return [];
 }
